@@ -2,15 +2,14 @@ import SwiftUI
 
 struct LongestStreaksView: View {
     @EnvironmentObject var viewModel: HabitListViewModel
-    @State private var activeSheet: ActiveSheet?
-    @Binding var showLongestStreaksView: Bool
-    @State private var shouldReturnToHome = false
-    @State private var showAddHabitView = false
+    @State private var activeSheet: CustomMenuButton.ActiveSheet?
+    @Environment(\.presentationMode) private var presentationMode
+
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.habits.filter { $0.longestStreak >= 1 }, id: \.id) { habit in
+                ForEach(viewModel.habits.filter({ $0.streak > 0 }), id: \.id) { habit in
                     HStack {
                         VStack(alignment: .leading) {
                             Text(habit.name)
@@ -40,19 +39,24 @@ struct LongestStreaksView: View {
             }
             .navigationBarTitle("Longest Streaks")
             .navigationBarItems(trailing:
-                                    CustomMenuButton(
-                                        activeSheet: $activeSheet,
-                                        showLongestStreaksView: $showLongestStreaksView,
-                                        currentView: .longestStreaks
-                                    )
+                CustomMenuButton(
+                    activeSheet: $activeSheet,
+                    currentView: .longestStreaks,
+                    onHomeButtonTapped: { presentationMode.wrappedValue.dismiss() }
+                )
             )
             .sheet(item: $activeSheet) { sheet in
                 switch sheet {
                 case .addHabit:
-                    AddEditHabitView(activeSheet: .constant(nil), habitToEdit: nil)
+                    AddEditHabitView(habitToEdit: nil)
+
                         .environmentObject(viewModel)
-                case .editHabit(let habit):
-                    AddEditHabitView(activeSheet: .constant(nil), habitToEdit: habit)
+                case .editHabit:
+                    AddEditHabitView(habitToEdit: nil)
+
+                        .environmentObject(viewModel)
+                case .longestStreaks:
+                    LongestStreaksView()
                         .environmentObject(viewModel)
                 }
             }
@@ -66,7 +70,9 @@ struct LongestStreaksView: View {
 
 struct LongestStreaksView_Previews: PreviewProvider {
     static var previews: some View {
-        LongestStreaksView(showLongestStreaksView: .constant(false))
+        LongestStreaksView()
             .environmentObject(HabitListViewModel())
     }
 }
+
+

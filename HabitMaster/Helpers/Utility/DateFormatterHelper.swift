@@ -1,11 +1,3 @@
-//
-//  DateFormatter.swift
-//  HabitMaster
-//
-//  Created by Hari Masoor on 5/4/23.
-//
-
-import Foundation
 import Foundation
 
 struct DateFormatterHelper {
@@ -34,4 +26,11 @@ struct DateFormatterHelper {
         dateFormatter.timeStyle = .none
         return dateFormatter.string(from: date)
     }
+
+    func dateFromString(_ string: String, format: String) -> Date? {
+        dateFormatter.dateFormat = format
+        return dateFormatter.date(from: string)
+    }
 }
+
+

@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		5F5D4B302A0716DF00212AB3 /* GlobalEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B2F2A0716DF00212AB3 /* GlobalEnums.swift */; };
+		5F5D4B322A076B9E00212AB3 /* CheckmarkToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B312A076B9E00212AB3 /* CheckmarkToggleStyle.swift */; };
+		5F5D4B3A2A097C1300212AB3 /* HabitCompletionDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B392A097C1300212AB3 /* HabitCompletionDateView.swift */; };
+		5F5D4B3C2A097D1D00212AB3 /* HabitDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B3B2A097D1D00212AB3 /* HabitDescriptionView.swift */; };
+		5F5D4B8A2A0A027200212AB3 /* HabitDescriptionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B892A0A027200212AB3 /* HabitDescriptionEditor.swift */; };
+		5F5D4B8C2A0A02A300212AB3 /* HabitCompletionDateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B8B2A0A02A300212AB3 /* HabitCompletionDateEditor.swift */; };
+		5F5D4B8E2A0A9B0200212AB3 /* MainButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B8D2A0A9B0200212AB3 /* MainButtonStyle.swift */; };
 		5F84F4A02A041A190062F287 /* HabitMasterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F84F49F2A041A190062F287 /* HabitMasterApp.swift */; };
 		5F84F4A42A041A1A0062F287 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F84F4A32A041A1A0062F287 /* Assets.xcassets */; };
 		5F84F4A72A041A1A0062F287 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F84F4A62A041A1A0062F287 /* Preview Assets.xcassets */; };
@@ -52,6 +58,12 @@
 
 /* Begin PBXFileReference section */
 		5F5D4B2F2A0716DF00212AB3 /* GlobalEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEnums.swift; sourceTree = "<group>"; };
+		5F5D4B312A076B9E00212AB3 /* CheckmarkToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkToggleStyle.swift; sourceTree = "<group>"; };
+		5F5D4B392A097C1300212AB3 /* HabitCompletionDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCompletionDateView.swift; sourceTree = "<group>"; };
+		5F5D4B3B2A097D1D00212AB3 /* HabitDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDescriptionView.swift; sourceTree = "<group>"; };
+		5F5D4B892A0A027200212AB3 /* HabitDescriptionEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDescriptionEditor.swift; sourceTree = "<group>"; };
+		5F5D4B8B2A0A02A300212AB3 /* HabitCompletionDateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCompletionDateEditor.swift; sourceTree = "<group>"; };
+		5F5D4B8D2A0A9B0200212AB3 /* MainButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButtonStyle.swift; sourceTree = "<group>"; };
 		5F84F49C2A041A190062F287 /* HabitMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F84F49F2A041A190062F287 /* HabitMasterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitMasterApp.swift; sourceTree = "<group>"; };
 		5F84F4A32A041A1A0062F287 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -186,6 +198,11 @@
 				5F84F4E02A04205E0062F287 /* Settings */,
 				5F84F4DF2A0420500062F287 /* AddEditHabit */,
 				5F84F4DE2A0420430062F287 /* Home */,
+				5F5D4B392A097C1300212AB3 /* HabitCompletionDateView.swift */,
+				5F5D4B8D2A0A9B0200212AB3 /* MainButtonStyle.swift */,
+				5F5D4B3B2A097D1D00212AB3 /* HabitDescriptionView.swift */,
+				5F5D4B892A0A027200212AB3 /* HabitDescriptionEditor.swift */,
+				5F5D4B8B2A0A02A300212AB3 /* HabitCompletionDateEditor.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -254,6 +271,7 @@
 			children = (
 				5F84F4EC2A0421370062F287 /* DateFormatterHelper.swift */,
 				5F5D4B2F2A0716DF00212AB3 /* GlobalEnums.swift */,
+				5F5D4B312A076B9E00212AB3 /* CheckmarkToggleStyle.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -434,12 +452,16 @@
 				5F84F4FD2A0461AE0062F287 /* HabitDetailView.swift in Sources */,
 				5F84F5052A0576E40062F287 /* LongestStreaksView.swift in Sources */,
 				5F84F5082A058D620062F287 /* CustomMenuButton.swift in Sources */,
+				5F5D4B3C2A097D1D00212AB3 /* HabitDescriptionView.swift in Sources */,
 				5F84F4F52A0427030062F287 /* CodableColor.swift in Sources */,
 				5F84F4D32A041FA00062F287 /* HomeView.swift in Sources */,
+				5F5D4B8C2A0A02A300212AB3 /* HabitCompletionDateEditor.swift in Sources */,
 				5F84F4A02A041A190062F287 /* HabitMasterApp.swift in Sources */,
+				5F5D4B322A076B9E00212AB3 /* CheckmarkToggleStyle.swift in Sources */,
 				5F84F4F82A0429320062F287 /* HabitRowView.swift in Sources */,
 				5F84F4D92A041FDF0062F287 /* SettingsView.swift in Sources */,
 				5F84F4EF2A0426420062F287 /* User.swift in Sources */,
+				5F5D4B8E2A0A9B0200212AB3 /* MainButtonStyle.swift in Sources */,
 				5F5D4B302A0716DF00212AB3 /* GlobalEnums.swift in Sources */,
 				5F84F4F32A04268E0062F287 /* Achievement.swift in Sources */,
 				5F84F4F12A0426600062F287 /* Category.swift in Sources */,
@@ -447,6 +469,8 @@
 				5F84F4E82A0420F40062F287 /* AppColors.swift in Sources */,
 				5F84F4E52A0420C20062F287 /* Color+Extension.swift in Sources */,
 				5F84F4D52A041FBD0062F287 /* AddEditHabitView.swift in Sources */,
+				5F5D4B8A2A0A027200212AB3 /* HabitDescriptionEditor.swift in Sources */,
+				5F5D4B3A2A097C1300212AB3 /* HabitCompletionDateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

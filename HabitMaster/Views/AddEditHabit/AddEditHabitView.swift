@@ -1,75 +1,62 @@
 import SwiftUI
 
-enum AddEditHabitSheet: Identifiable {
-    case addHabit
-    case editHabit(Habit)
-
-    var id: Int {
-        switch self {
-        case .addHabit:
-            return 1
-        case .editHabit(let habit):
-            return habit.id.hashValue
-        }
-    }
-}
-
-
 struct AddEditHabitView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var viewModel: HabitListViewModel
-    @Binding var activeSheet: AddEditHabitSheet?
-    @State private var habitName: String = ""
-    @State private var habitSubtitle: String = ""
-    var habitToEdit: Habit?
-
+    
+    let habitToEdit: Habit?
+    @State private var habit: Habit
+    
+    // Add a state variable for the selected completion date
+    @State private var selectedCompletionDate = Date()
+    
+    init(habitToEdit: Habit? = nil) {
+        self.habitToEdit = habitToEdit
+        _habit = State(initialValue: habitToEdit ?? Habit(name: "", subtitle: ""))
+    }
+    
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Habit Name")) {
-                    TextField("Name", text: $habitName)
-                }
-                Section(header: Text("Habit Subtitle")) {
-                    TextField("Subtitle", text: $habitSubtitle)
+                Section(header: Text("Habit Details")) {
+                    TextField("Habit Name", text: $habit.name)
+                    // Replace "Habit Subtitle" with "Description"
+                    TextField("Description", text: $habit.subtitle)
+                    
+                    // Add a DatePicker for selecting the completion date
+                    DatePicker("Completion Date", selection: $selectedCompletionDate, displayedComponents: .date)
                 }
             }
-            .navigationTitle(habitToEdit == nil ? "Add Habit" : "Edit Habit")
-            .navigationBarItems(leading:
-                Button("Cancel") {
-                    presentationMode.wrappedValue.dismiss()
-                    activeSheet = nil
-                }, trailing:
-                Button(habitToEdit == nil ? "Add" : "Save") {
-                    if let habitToEdit = habitToEdit {
-                        if let index = viewModel.habits.firstIndex(where: { $0.id == habitToEdit.id }) {
-                            viewModel.habits[index].name = habitName
-                            viewModel.habits[index].subtitle = habitSubtitle
-                        }
-                    } else {
-                        let habit = Habit(name: habitName, subtitle: habitSubtitle)
-                        viewModel.habits.append(habit)
+            .navigationBarTitle(habitToEdit == nil ? "Add Habit" : "Edit Habit")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        presentationMode.wrappedValue.dismiss()
                     }
-                    presentationMode.wrappedValue.dismiss()
-                    activeSheet = nil
                 }
-            )
-        }
-        .onAppear {
-            if let habitToEdit = habitToEdit {
-                habitName = habitToEdit.name
-                habitSubtitle = habitToEdit.subtitle
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        if let habitToEdit = habitToEdit, let index = viewModel.habits.firstIndex(where: { $0.id == habitToEdit.id }) {
+                            // Update the habit with the selected completion date and edited description
+                            var updatedHabit = habit
+                            updatedHabit.subtitle = habit.subtitle
+                            updatedHabit.completionDates.append(selectedCompletionDate)
+                            viewModel.habits[index] = updatedHabit
+                        } else {
+                            // Create a new habit with the selected completion date and edited description
+                            var newHabit = habit
+                            newHabit.subtitle = habit.subtitle
+                            newHabit.completionDates.append(selectedCompletionDate)
+                            viewModel.habits.append(newHabit)
+                        }
+                        
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
             }
         }
     }
 }
-
-struct AddEditHabitView_Previews: PreviewProvider {
-    @State static var activeSheet: AddEditHabitSheet? = nil
-    static var previews: some View {
-        AddEditHabitView(activeSheet: $activeSheet, habitToEdit: nil)
-            .environmentObject(HabitListViewModel())
-    }
-}
-
+ 
 
 

@@ -2,44 +2,71 @@ import SwiftUI
 
 struct HabitDetailView: View {
     @Binding var habit: Habit
-    @State private var editingDescription = false
-
+    @State private var habitLocal: Habit
+    
+    init(habit: Binding<Habit>) {
+        self._habit = habit
+        self._habitLocal = State(initialValue: habit.wrappedValue)
+    }
+    
     var body: some View {
-        VStack {
-            Text("Completion date:")
-                .font(.subheadline)
-                .padding(.top)
-            
-            Text(habit.subtitle)
-                .font(.subheadline)
-                .padding()
-                .background(Color(.systemGray5))
-                .cornerRadius(8)
-                .padding()
-                .onLongPressGesture {
-                    self.editingDescription.toggle()
+        ScrollView {
+            VStack {
+                Spacer()
+                    .frame(height: UIScreen.main.bounds.height * 0.20)
+                
+                HabitDescriptionView(habitDescription: $habitLocal.subtitle)
+                    .padding(.horizontal)
+                
+                HabitCompletionDateView(habit: $habitLocal)
+                    .padding(.horizontal)
+                
+                VStack(alignment: .center, spacing: 10) {
+                    Text("Current Streak: \(habitLocal.currentStreak)")
+                        .font(.headline)
+                    Text("Longest Streak: \(habitLocal.longestStreak)")
+                        .font(.headline)
                 }
-                .sheet(isPresented: $editingDescription) {
-                    NavigationView {
-                        VStack {
-                            TextEditor(text: $habit.subtitle)
-                                .padding()
-                                .background(Color(.systemGray5))
-                                .cornerRadius(8)
-                                .padding()
-                            
-                            Spacer()
-                        }
-                        .navigationBarTitle("Edit Description", displayMode: .inline)
-                        .navigationBarItems(trailing: Button("Save") {
-                            self.editingDescription.toggle()
-                        })
-                    }
-                }
-            
-            Spacer()
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                .padding(.bottom)
+                
+                Spacer()
+                
+                deleteHabitButton
+            }
+            .padding(.top, 20)
+        }
+        .edgesIgnoringSafeArea(.all)
+        .background(Color(.systemGray6)) // Set the background color to grey
+        .navigationBarTitle(habitLocal.name, displayMode: .inline)
+    }
+    
+    private var deleteHabitButton: some View {
+        Button(action: {
+            // Add your delete habit action here
+        }) {
+            Text("Delete Habit")
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
+                .background(Color.red)
+                .foregroundColor(.white)
+                .cornerRadius(10)
         }
         .padding(.horizontal)
-        .navigationTitle(habit.name)
+        .padding(.bottom, 20)
     }
 }
+
+
+
+struct HabitDetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        HabitDetailView(habit: .constant(Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date())))
+    }
+}
+
+
+
