@@ -4,7 +4,6 @@ import BackgroundTasks
 @main
 struct HabitMasterApp: App {
     @ObservedObject private var habitListViewModel = HabitListViewModel()
-    private var streakViewModel = StreakViewModel()
 
     init() {
         setupBackgroundTask()
@@ -23,10 +22,7 @@ extension HabitMasterApp {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.example.HabitMaster.resetStreaks", using: nil) { task in
             self.handleResetStreaks(task: task as! BGAppRefreshTask)
         }
-        habitListViewModel.habits.forEach { habit in
-            var mutableHabit = habit
-            streakViewModel.resetStreaksIfNeeded(for: &mutableHabit)
-        }
+        habitListViewModel.resetStreaksIfNeeded()
     }
     
     private func scheduleBackgroundTask() {
@@ -46,16 +42,12 @@ extension HabitMasterApp {
         }
         
         DispatchQueue.main.async {
-            self.habitListViewModel.habits.forEach { habit in
-                var mutableHabit = habit
-                self.streakViewModel.resetStreaksIfNeeded(for: &mutableHabit)
-            }
+            self.habitListViewModel.resetStreaksIfNeeded()
         }
         task.setTaskCompleted(success: true)
         
         scheduleBackgroundTask()
     }
-    
 }
 
 extension Date {
@@ -70,5 +62,6 @@ extension Date {
         return calendar.date(from: components)!
     }
 }
+
 
 

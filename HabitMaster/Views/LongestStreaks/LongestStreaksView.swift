@@ -9,7 +9,7 @@ struct LongestStreaksView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.habits.filter({ $0.streak > 0 }), id: \.id) { habit in
+                ForEach(viewModel.habits.filter({ $0.currentStreak > 0 }), id: \.id) { habit in
                     HStack {
                         VStack(alignment: .leading) {
                             Text(habit.name)

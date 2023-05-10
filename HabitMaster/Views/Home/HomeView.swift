@@ -5,36 +5,32 @@ struct HomeView: View {
     @State private var activeSheet: CustomMenuButton.ActiveSheet?
     @State private var currentTime = Date()
     @State private var showActionSheet = false
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationView {
             content
                 .background(Color.gray.opacity(0.1))
                 .edgesIgnoringSafeArea(.bottom)
+                .onAppear { habitListViewModel.resetStreaksIfNeeded() }
         }
+        .onChange(of: scenePhase, perform: onScenePhaseChange)
     }
 
     private var content: some View {
         VStack {
             List {
-                ForEach(Array(habitListViewModel.habits.indices), id: \.self) { index in
-                    let habitBinding = $habitListViewModel.habits[index]
-                    NavigationLink(destination: HabitDetailView(habit: habitBinding)) {
-                        HabitRowView(habit: habitBinding.wrappedValue, toggleIsOn: Binding(
-                            get: { habitListViewModel.habits[index].isCompleted },
-                            set: { newValue in
-                                habitListViewModel.habits[index].isCompleted = newValue
-                                habitListViewModel.updateStreaksIfNeeded()
-                            }
-                        ))
+                ForEach(habitListViewModel.habits.indices, id: \.self) { index in
+                    NavigationLink(destination: HabitDetailView(index: index).environmentObject(habitListViewModel)) {
+                        HabitRowView(index: index).environmentObject(habitListViewModel)
                     }
                     .padding(.vertical, 8) // Add vertical padding to habit rows
                 }
-
                 .onDelete(perform: habitListViewModel.deleteHabit)
+
             }
             .listStyle(PlainListStyle())
-            .padding(.top, 16) // Add top padding to the list
+            .padding(.top, 16)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -74,6 +70,15 @@ struct HomeView: View {
         let minutes = Int((remaining.truncatingRemainder(dividingBy: 3600)) / 60)
         return "\(hours)h \(minutes)m"
     }
+    
+    private func onScenePhaseChange(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            habitListViewModel.resetStreaksIfNeeded()
+        default:
+            break
+        }
+    }
 }
 
 struct HomeView_Previews: PreviewProvider {
@@ -82,6 +87,8 @@ struct HomeView_Previews: PreviewProvider {
             .environmentObject(HabitListViewModel())
     }
 }
+
+
 
 
 

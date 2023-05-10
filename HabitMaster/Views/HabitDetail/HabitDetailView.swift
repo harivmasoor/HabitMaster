@@ -1,13 +1,8 @@
 import SwiftUI
 
 struct HabitDetailView: View {
-    @Binding var habit: Habit
-    @State private var habitLocal: Habit
-    
-    init(habit: Binding<Habit>) {
-        self._habit = habit
-        self._habitLocal = State(initialValue: habit.wrappedValue)
-    }
+    let index: Int
+    @EnvironmentObject var habitListViewModel: HabitListViewModel
     
     var body: some View {
         ScrollView {
@@ -15,16 +10,16 @@ struct HabitDetailView: View {
                 Spacer()
                     .frame(height: UIScreen.main.bounds.height * 0.20)
                 
-                HabitDescriptionView(habitDescription: $habitLocal.subtitle)
+                HabitDescriptionView(habitDescription: $habitListViewModel.habits[index].subtitle)
                     .padding(.horizontal)
                 
-                HabitCompletionDateView(habit: $habitLocal)
+                HabitCompletionDateView(habit: $habitListViewModel.habits[index])
                     .padding(.horizontal)
                 
                 VStack(alignment: .center, spacing: 10) {
-                    Text("Current Streak: \(habitLocal.currentStreak)")
+                    Text("Current Streak: \(habitListViewModel.habits[index].currentStreak)")
                         .font(.headline)
-                    Text("Longest Streak: \(habitLocal.longestStreak)")
+                    Text("Longest Streak: \(habitListViewModel.habits[index].longestStreak)")
                         .font(.headline)
                 }
                 .padding()
@@ -40,7 +35,7 @@ struct HabitDetailView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .background(Color(.systemGray6)) // Set the background color to grey
-        .navigationBarTitle(habitLocal.name, displayMode: .inline)
+        .navigationBarTitle(habitListViewModel.habits[index].name, displayMode: .inline)
     }
     
     private var deleteHabitButton: some View {
@@ -64,7 +59,10 @@ struct HabitDetailView: View {
 
 struct HabitDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        HabitDetailView(habit: .constant(Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date())))
+        let viewModel = HabitListViewModel()
+        viewModel.habits.append(Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date()))
+        return HabitDetailView(index: 0)
+            .environmentObject(viewModel)
     }
 }
 
