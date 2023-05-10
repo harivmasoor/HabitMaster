@@ -60,11 +60,13 @@ class HabitListViewModel: ObservableObject {
             habits[index].isCompleted = isCompleted
             if isCompleted {
                 habits[index].currentStreak += 1
+                habits[index].completionDate = Date() // Updating completion date
             } else if habits[index].currentStreak > 0 {
                 habits[index].currentStreak -= 1
             }
         }
     }
+
 
     
     func resetStreaksIfNeeded() {
