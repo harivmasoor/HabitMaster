@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject var viewModel: HabitListViewModel
+    @EnvironmentObject var habitListViewModel: HabitListViewModel
     @State private var activeSheet: CustomMenuButton.ActiveSheet?
     @State private var currentTime = Date()
     @State private var showActionSheet = false
@@ -17,19 +17,21 @@ struct HomeView: View {
     private var content: some View {
         VStack {
             List {
-                ForEach(Array(viewModel.habits.enumerated()), id: \.element.id) { index, habit in
-                    NavigationLink(destination: HabitDetailView(habit: Binding.constant(habit)), label: {
-                        HabitRowView(habit: habit, toggleIsOn: Binding(
-                            get: { viewModel.habits[index].isCompleted },
+                ForEach(Array(habitListViewModel.habits.indices), id: \.self) { index in
+                    let habitBinding = $habitListViewModel.habits[index]
+                    NavigationLink(destination: HabitDetailView(habit: habitBinding)) {
+                        HabitRowView(habit: habitBinding.wrappedValue, toggleIsOn: Binding(
+                            get: { habitListViewModel.habits[index].isCompleted },
                             set: { newValue in
-                                viewModel.habits[index].isCompleted = newValue
-                                viewModel.updateStreak(for: index)
+                                habitListViewModel.habits[index].isCompleted = newValue
+                                habitListViewModel.updateStreaksIfNeeded()
                             }
                         ))
-                    })
+                    }
                     .padding(.vertical, 8) // Add vertical padding to habit rows
                 }
-                .onDelete(perform: viewModel.deleteHabit)
+
+                .onDelete(perform: habitListViewModel.deleteHabit)
             }
             .listStyle(PlainListStyle())
             .padding(.top, 16) // Add top padding to the list
@@ -54,20 +56,20 @@ struct HomeView: View {
                 switch sheet {
                 case .editHabit(let habit):
                     AddEditHabitView(habitToEdit: habit)
-                        .environmentObject(viewModel)
+                        .environmentObject(habitListViewModel)
                 case .longestStreaks:
                     LongestStreaksView()
-                        .environmentObject(viewModel)
+                        .environmentObject(habitListViewModel)
                 case .addHabit:
                     AddEditHabitView(habitToEdit: nil)
-                        .environmentObject(viewModel)
+                        .environmentObject(habitListViewModel)
                 }
             }
         }
     }
 
     private func formattedTimeRemainingUntilMidnight() -> String {
-        let remaining = viewModel.timeRemainingUntilMidnight()
+        let remaining = habitListViewModel.timeRemainingUntilMidnight()
         let hours = Int(remaining / 3600)
         let minutes = Int((remaining.truncatingRemainder(dividingBy: 3600)) / 60)
         return "\(hours)h \(minutes)m"
@@ -80,6 +82,8 @@ struct HomeView_Previews: PreviewProvider {
             .environmentObject(HabitListViewModel())
     }
 }
+
+
 
 
 

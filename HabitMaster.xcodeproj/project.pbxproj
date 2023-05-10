@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F3F7A662A0B20CC00E0AB9B /* StreakViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3F7A652A0B20CC00E0AB9B /* StreakViewModel.swift */; };
 		5F5D4B302A0716DF00212AB3 /* GlobalEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B2F2A0716DF00212AB3 /* GlobalEnums.swift */; };
 		5F5D4B322A076B9E00212AB3 /* CheckmarkToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B312A076B9E00212AB3 /* CheckmarkToggleStyle.swift */; };
 		5F5D4B3A2A097C1300212AB3 /* HabitCompletionDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B392A097C1300212AB3 /* HabitCompletionDateView.swift */; };
@@ -57,6 +58,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5F3F7A652A0B20CC00E0AB9B /* StreakViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakViewModel.swift; sourceTree = "<group>"; };
 		5F5D4B2F2A0716DF00212AB3 /* GlobalEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEnums.swift; sourceTree = "<group>"; };
 		5F5D4B312A076B9E00212AB3 /* CheckmarkToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkToggleStyle.swift; sourceTree = "<group>"; };
 		5F5D4B392A097C1300212AB3 /* HabitCompletionDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCompletionDateView.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 			isa = PBXGroup;
 			children = (
 				5F84F4FF2A0466AE0062F287 /* HabitListViewModel.swift */,
+				5F3F7A652A0B20CC00E0AB9B /* StreakViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -450,6 +453,7 @@
 				5F84F4ED2A0421370062F287 /* DateFormatterHelper.swift in Sources */,
 				5F84F4DB2A041FED0062F287 /* PremiumUpgradeView.swift in Sources */,
 				5F84F4FD2A0461AE0062F287 /* HabitDetailView.swift in Sources */,
+				5F3F7A662A0B20CC00E0AB9B /* StreakViewModel.swift in Sources */,
 				5F84F5052A0576E40062F287 /* LongestStreaksView.swift in Sources */,
 				5F84F5082A058D620062F287 /* CustomMenuButton.swift in Sources */,
 				5F5D4B3C2A097D1D00212AB3 /* HabitDescriptionView.swift in Sources */,
