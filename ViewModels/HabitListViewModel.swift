@@ -1,7 +1,27 @@
 import Foundation
+import Combine
 
 class HabitListViewModel: ObservableObject {
-    @Published var habits: [Habit] = []
+    @Published var habits: [Habit] = [] {
+        didSet {
+            // When a habit is added, subscribe to its changes
+            if habits.count > oldValue.count {
+                let newHabit = habits.last!
+                habitSubscriptions[newHabit.id] = newHabit.objectWillChange.sink { [weak self] _ in
+                    self?.objectWillChange.send()
+                    self?.saveHabits()
+                }
+            }
+            // When a habit is removed, unsubscribe from its changes
+            else if habits.count < oldValue.count {
+                for habit in oldValue where !habits.contains(habit) {
+                    habitSubscriptions[habit.id]?.cancel()
+                    habitSubscriptions[habit.id] = nil
+                }
+            }
+        }
+    }
+    private var habitSubscriptions: [UUID: AnyCancellable] = [:]
     
     init() {
         if let data = UserDefaults.standard.data(forKey: "habits") {
@@ -38,16 +58,15 @@ class HabitListViewModel: ObservableObject {
     func updateHabitCompletionState(id: UUID, isCompleted: Bool) {
         if let index = habits.firstIndex(where: { $0.id == id }) {
             habits[index].isCompleted = isCompleted
-            // If the habit was just completed, add the current date to completionDates
             if isCompleted {
-                habits[index].completionDates.append(Date())
-                // Update streaks
-                habits[index].updateStreaks()
+                habits[index].currentStreak += 1
+            } else if habits[index].currentStreak > 0 {
+                habits[index].currentStreak -= 1
             }
-            // Save changes to UserDefaults
-            saveHabits()
         }
     }
+
+    
     func resetStreaksIfNeeded() {
         for index in habits.indices {
             if !Calendar.current.isDateInToday(habits[index].completionDate) && habits[index].isCompleted {

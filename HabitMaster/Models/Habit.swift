@@ -1,16 +1,17 @@
 import Foundation
 import SwiftUI
+import Combine
 
-struct Habit: Identifiable, Codable, Equatable {
+final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     let id: UUID
-    var name: String
-    var subtitle: String
-    var isCompleted: Bool
+    @Published var name: String
+    @Published var subtitle: String
+    @Published var isCompleted: Bool
     var creationDate: Date
-    var completionDates: [Date]
-    var longestStreak: Int
-    var currentStreak: Int
-    var completionDate: Date
+    @Published var completionDates: [Date]
+    @Published var longestStreak: Int
+    @Published var currentStreak: Int
+    @Published var completionDate: Date
     
     init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date()) {
         self.id = id
@@ -24,8 +25,8 @@ struct Habit: Identifiable, Codable, Equatable {
         self.completionDate = completionDate
     }
     
-    init(name: String, subtitle: String) {
-        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, completionDate: Date())
+    convenience init(name: String, subtitle: String) {
+        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date())
     }
     
     var completionDateFormatted: String {
@@ -38,7 +39,7 @@ struct Habit: Identifiable, Codable, Equatable {
     
     // MARK: - Codable
     enum CodingKeys: String, CodingKey {
-        case id, name, subtitle, isCompleted, creationDate, completionDates, streak, longestStreak, currentStreak, completionPercentage, lastCompleted, completionDate
+        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate
     }
     
     init(from decoder: Decoder) throws {
@@ -63,30 +64,19 @@ struct Habit: Identifiable, Codable, Equatable {
         try container.encode(creationDate, forKey: .creationDate)
         try container.encode(completionDates, forKey: .completionDates)
         try container.encode(longestStreak, forKey: .longestStreak)
+        try container.encode(currentStreak, forKey: .currentStreak)
         try container.encode(completionDate, forKey: .completionDate)
     }
+    
+    static func ==(lhs: Habit, rhs: Habit) -> Bool {
+        lhs.id == rhs.id
+    }
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    mutating func updateStreaks() {
-        currentStreak = 0
-        if completionDates.count > 1 {
-            for i in stride(from: completionDates.count - 1, through:         1, by: -1) {
-                let date1 = completionDates[i]
-                let date2 = completionDates[i-1]
-                if Calendar.current.isDate(date1, inSameDayAs: date2.addingTimeInterval(24*60*60)) {
-                    currentStreak += 1
-                } else {
-                    break
-                }
-            }
-        }
-        if currentStreak > longestStreak {
-            longestStreak = currentStreak
-        }
-    }
     
-    mutating func toggleCompletion() {
+    func toggleCompletion() {
         let currentDate = Date()
         let calendar = Calendar.current
         
@@ -113,9 +103,30 @@ struct Habit: Identifiable, Codable, Equatable {
                     currentStreak -= 1
                 }
             }
+            // Update streaks based on completion dates
+            updateStreaks()
         }
         
         completionDate = currentDate
     }
+    
+    func updateStreaks() {
+        currentStreak = 0
+        if completionDates.count > 1 {
+            for i in stride(from: completionDates.count - 1, through: 1, by: -1) {
+                let date1 = completionDates[i]
+                let date2 = completionDates[i-1]
+                if Calendar.current.isDate(date1, inSameDayAs: date2.addingTimeInterval(24*60*60)) {
+                    currentStreak += 1
+                } else {
+                    break
+                }
+            }
+        }
+        if currentStreak > longestStreak {
+            longestStreak = currentStreak
+        }
+    }
 }
+
 

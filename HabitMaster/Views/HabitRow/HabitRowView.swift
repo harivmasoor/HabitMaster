@@ -3,16 +3,15 @@ import SwiftUI
 struct HabitRowView: View {
     var index: Int
     @EnvironmentObject var habitListViewModel: HabitListViewModel
-
+    
     var body: some View {
         let isOn = Binding<Bool>(
             get: { habitListViewModel.habits[index].isCompleted },
             set: { newValue in
-                habitListViewModel.habits[index].isCompleted = newValue
-                habitListViewModel.habits[index].toggleCompletion()
+                habitListViewModel.updateHabitCompletionState(id: habitListViewModel.habits[index].id, isCompleted: newValue)
             }
         )
-
+        
         return HStack {
             VStack(alignment: .leading, spacing: 5) {
                 Text(habitListViewModel.habits[index].name)
@@ -45,7 +44,6 @@ struct HabitRowView_Previews: PreviewProvider {
             .background(Color.white)
     }
 }
-
 
 
 

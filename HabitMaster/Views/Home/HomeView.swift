@@ -27,7 +27,6 @@ struct HomeView: View {
                     .padding(.vertical, 8) // Add vertical padding to habit rows
                 }
                 .onDelete(perform: habitListViewModel.deleteHabit)
-
             }
             .listStyle(PlainListStyle())
             .padding(.top, 16)
@@ -87,6 +86,7 @@ struct HomeView_Previews: PreviewProvider {
             .environmentObject(HabitListViewModel())
     }
 }
+
 
 
 
