@@ -68,14 +68,17 @@ class HabitListViewModel: ObservableObject {
             if habit.isCompleted != isCompleted {
                 if isCompleted {
                     habit.currentStreak += 1
+                    habit.isCompletedYesterday = true  // Set isCompletedYesterday to true when the habit is completed
                 } else if habit.currentStreak > 0 {
                     habit.currentStreak -= 1
                 }
             }
 
             habit.isCompleted = isCompleted
+            saveHabits()  // Save the updated habits array
         }
     }
+
 
     func resetHabitsIfNeeded() {
         let calendar = Calendar.current
@@ -100,13 +103,19 @@ class HabitListViewModel: ObservableObject {
             let habit = habits[index]
             let isSameDay = calendar.isDateInToday(habit.completionDate)
             
+            // If it's not the same day and the habit was not completed yesterday, then reset the streak
             if !isSameDay && !habit.isCompletedYesterday {
                 habit.currentStreak = 0
+                habit.isCompletedYesterday = false
             }
-            habit.isCompletedYesterday = habit.isCompleted
+            // If it is the same day and the habit was completed yesterday, then keep the streak and set isCompletedYesterday to false for the next check
+            else if isSameDay && habit.isCompletedYesterday {
+                habit.isCompletedYesterday = false
+            }
         }
         saveHabits()
     }
+
     func timeRemainingUntilMidnight() -> TimeInterval {
         let calendar = Calendar.current
         let now = Date()
