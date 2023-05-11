@@ -64,15 +64,15 @@ struct HabitDetailView: View {
     }
 }
 
-struct HabitDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        let viewModel = HabitListViewModel()
-        let habit = Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date(), isCompletedYesterday: false)
-        viewModel.habits.append(habit)
-        return HabitDetailView(habit: habit)
-            .environmentObject(viewModel)
-    }
-}
+//struct HabitDetailView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let viewModel = HabitListViewModel()
+//        let habit = Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date(), isCompletedYesterday: false)
+//        viewModel.habits.append(habit)
+//        return HabitDetailView(habit: habit)
+//            .environmentObject(viewModel)
+//    }
+//}
 
 
 

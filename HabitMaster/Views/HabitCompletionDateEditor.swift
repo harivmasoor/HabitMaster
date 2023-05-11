@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HabitCompletionDateEditor: View {
     @Binding var completionDate: Date
+    @Binding var habit: Habit
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
@@ -11,6 +12,7 @@ struct HabitCompletionDateEditor: View {
                 .padding()
             
             Button("Save") {
+                habit.completionDate = completionDate
                 presentationMode.wrappedValue.dismiss()
             }
             .padding()
@@ -25,8 +27,8 @@ struct HabitCompletionDateEditor: View {
 
 
 
-struct HabitCompletionDateEditor_Previews: PreviewProvider {
-    static var previews: some View {
-        HabitCompletionDateEditor(completionDate: .constant(Date()))
-    }
-}
+//struct HabitCompletionDateEditor_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HabitCompletionDateEditor(completionDate: .constant(Date()))
+//    }
+//}

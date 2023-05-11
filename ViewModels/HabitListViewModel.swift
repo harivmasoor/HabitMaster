@@ -72,21 +72,21 @@ class HabitListViewModel: ObservableObject {
     func updateHabitCompletionState(id: UUID, isCompleted: Bool) {
         if let index = habits.firstIndex(where: { $0.id == id }) {
             let habit = habits[index]
-            
-            if habit.isCompleted != isCompleted {
-                if isCompleted {
-                    habit.currentStreak += 1
-                    habit.isCompletedYesterday = true
-                    
-                    if habit.currentStreak > habit.longestStreak {
-                        habit.longestStreak = habit.currentStreak
-                    }
-                } else if habit.currentStreak > 0 {
-                    habit.currentStreak -= 1
-                    
-                    if habit.currentStreak < habit.longestStreak {
-                        habit.longestStreak = habit.currentStreak
-                    }
+
+            if isCompleted {
+                habit.currentStreak += 1
+                habit.completionDates.append(Date())
+                habit.isCompletedYesterday = true
+                
+                if habit.currentStreak > habit.longestStreak {
+                    habit.longestStreak = habit.currentStreak
+                }
+            } else {
+                habit.currentStreak = 0
+                habit.completionDates.removeLast()
+
+                if habit.currentStreak < habit.longestStreak {
+                    habit.longestStreak = habit.currentStreak
                 }
             }
 
@@ -96,30 +96,33 @@ class HabitListViewModel: ObservableObject {
     }
 
 
-
     func resetHabitsIfNeeded() {
         let calendar = Calendar.current
         for index in habits.indices {
             let habit = habits[index]
-            let isSameDay = calendar.isDateInToday(habit.completionDate)
+            let isSameDay = habit.completionDates.last.map { calendar.isDateInToday($0) } ?? false
             
             if !isSameDay {
-                if habit.isCompleted {
-                    habit.isCompletedYesterday = true
-                    habit.isCompleted = false
-                    if habit.currentStreak > habit.longestStreak {
-                        habit.longestStreak = habit.currentStreak
-                    }
-                } else {
-                    habit.isCompletedYesterday = false
-                    habit.currentStreak = 0
+                habit.isCompleted = false
+                habit.isCompletedYesterday = false
+                habit.currentStreak = 0
+                
+                if habit.currentStreak < habit.longestStreak {
+                    habit.longestStreak = habit.currentStreak
                 }
-                habit.completionDate = Date()
+                
+                if !habit.isCompletionDateManuallySet {
+                    habit.completionDate = Date()
+                }
             }
-        }
-        saveHabits()
-    }
+            // Reset isCompletionDateManuallySet at the start of a new day
+            if calendar.isDateInToday(habit.completionDate) {
+                habit.isCompletionDateManuallySet = false
+            }
 
+            saveHabits()
+        }
+    }
 
     func getIndex(byId id: UUID) -> Int? {
         return habits.firstIndex(where: { $0.id == id })
@@ -135,16 +138,18 @@ class HabitListViewModel: ObservableObject {
             if !isSameDay && !habit.isCompletedYesterday {
                 habit.currentStreak = 0
                 habit.isCompletedYesterday = false
+                if habit.currentStreak < habit.longestStreak {
+                    habit.longestStreak = habit.currentStreak
+                }
             }
             // If it is the same day and the habit was completed yesterday, then keep the streak and set isCompletedYesterday to false for the next check
             else if isSameDay && habit.isCompletedYesterday {
                 habit.isCompletedYesterday = false
             }
+            
+            saveHabits()
         }
-        saveHabits()
     }
-
-
     func timeRemainingUntilMidnight() -> TimeInterval {
         let calendar = Calendar.current
         let now = Date()
