@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct HomeView: View {
-    @EnvironmentObject var habitListViewModel: HabitListViewModel
     @State private var activeSheet: CustomMenuButton.ActiveSheet?
     @State private var currentTime = Date()
     @State private var showActionSheet = false
     @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject var habitListViewModel: HabitListViewModel
+
 
     var body: some View {
         NavigationView {

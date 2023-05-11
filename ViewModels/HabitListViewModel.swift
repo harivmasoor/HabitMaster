@@ -20,31 +20,40 @@ class HabitListViewModel: ObservableObject {
                     habitSubscriptions[habit.id] = nil
                 }
             }
+            saveHabits()
         }
     }
     private var habitSubscriptions: [UUID: AnyCancellable] = [:]
     
     init() {
-        if let data = UserDefaults.standard.data(forKey: "habits") {
-            let decoder = JSONDecoder()
-            if let decodedHabits = try? decoder.decode([Habit].self, from: data) {
-                self.habits = decodedHabits
-            } else {
-                self.habits = []
-            }
-        } else {
-            self.habits = []
-        }
-        
+        loadHabits()
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
             self?.saveHabits()
         }
     }
     
+    func loadHabits() {
+        let decoder = JSONDecoder()
+        if let data = UserDefaults.standard.data(forKey: "habits"),
+           let decodedHabits = try? decoder.decode([Habit].self, from: data) {
+            self.habits = decodedHabits
+            // Resubscribe to the objectWillChange publisher for each habit
+            for habit in habits {
+                habitSubscriptions[habit.id] = habit.objectWillChange.sink { [weak self] _ in
+                    self?.objectWillChange.send()
+                    self?.saveHabits()
+                }
+            }
+        }
+    }
+
+    
     func saveHabits() {
         let encoder = JSONEncoder()
-        if let encodedHabits = try? encoder.encode(habits) {
-            UserDefaults.standard.set(encodedHabits, forKey: "habits")
+        if let encodedData = try? encoder.encode(habits) {
+            UserDefaults.standard.set(encodedData, forKey: "habits")
+        } else {
+            print("Failed to encode habits")
         }
     }
 
@@ -64,20 +73,28 @@ class HabitListViewModel: ObservableObject {
         if let index = habits.firstIndex(where: { $0.id == id }) {
             let habit = habits[index]
             
-            // Only update the streak if the state is actually changing
             if habit.isCompleted != isCompleted {
                 if isCompleted {
                     habit.currentStreak += 1
-                    habit.isCompletedYesterday = true  // Set isCompletedYesterday to true when the habit is completed
+                    habit.isCompletedYesterday = true
+                    
+                    if habit.currentStreak > habit.longestStreak {
+                        habit.longestStreak = habit.currentStreak
+                    }
                 } else if habit.currentStreak > 0 {
                     habit.currentStreak -= 1
+                    
+                    if habit.currentStreak < habit.longestStreak {
+                        habit.longestStreak = habit.currentStreak
+                    }
                 }
             }
 
             habit.isCompleted = isCompleted
-            saveHabits()  // Save the updated habits array
+            saveHabits()
         }
     }
+
 
 
     func resetHabitsIfNeeded() {
@@ -89,19 +106,27 @@ class HabitListViewModel: ObservableObject {
             if !isSameDay {
                 habit.isCompleted = false
                 habit.currentStreak = 0
+                
+                if !habit.isCompletedYesterday && habit.longestStreak > 0 {
+                    habit.longestStreak -= 1
+                }
+                
+                habit.isCompletedYesterday = false
             }
+            
+            saveHabits()
         }
-        saveHabits()
     }
 
     func getIndex(byId id: UUID) -> Int? {
         return habits.firstIndex(where: { $0.id == id })
     }
+    
     func resetStreaksIfNeeded() {
         let calendar = Calendar.current
         for index in habits.indices {
             let habit = habits[index]
-            let isSameDay = calendar.isDateInToday(habit.completionDate)
+            let isSameDay = habit.completionDates.last.map { calendar.isDateInToday($0) } ?? false
             
             // If it's not the same day and the habit was not completed yesterday, then reset the streak
             if !isSameDay && !habit.isCompletedYesterday {
@@ -116,6 +141,7 @@ class HabitListViewModel: ObservableObject {
         saveHabits()
     }
 
+
     func timeRemainingUntilMidnight() -> TimeInterval {
         let calendar = Calendar.current
         let now = Date()
@@ -124,7 +150,6 @@ class HabitListViewModel: ObservableObject {
     }
 
 }
-
 
 
 

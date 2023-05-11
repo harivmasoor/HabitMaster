@@ -41,14 +41,14 @@ struct AddEditHabitView: View {
                     Button("Done") {
                         if let habitToEdit = habitToEdit, let index = viewModel.habits.firstIndex(where: { $0.id == habitToEdit.id }) {
                             // Update the habit with the selected completion date and edited description
-                            var updatedHabit = habit
+                            let updatedHabit = habit
                             updatedHabit.subtitle = habit.subtitle
                             updatedHabit.completionDates.append(selectedCompletionDate)
                             updatedHabit.completionDate = selectedCompletionDate // Add this line
                             viewModel.habits[index] = updatedHabit
                         } else {
                             // Create a new habit with the selected completion date and edited description
-                            var newHabit = habit
+                            let newHabit = habit
                             newHabit.subtitle = habit.subtitle
                             newHabit.completionDates.append(selectedCompletionDate)
                             newHabit.completionDate = selectedCompletionDate // Add this line

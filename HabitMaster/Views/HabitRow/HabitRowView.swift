@@ -1,5 +1,3 @@
-// HabitRowView
-
 import SwiftUI
 
 struct HabitRowView: View {
@@ -12,8 +10,7 @@ struct HabitRowView: View {
             get: { self.habit.isCompleted },
             set: { newValue in
                 if self.habit.isCompleted != newValue {
-                    self.habit.toggleCompletion()
-                    self.habitListViewModel.saveHabits()
+                    self.habitListViewModel.updateHabitCompletionState(id: self.habit.id, isCompleted: newValue)
                 }
             }
         )
@@ -45,7 +42,7 @@ struct HabitRowView: View {
             .tint(.red)
         }
     }
-    }
+}
 
 struct HabitRowView_Previews: PreviewProvider {
     static var previews: some View {

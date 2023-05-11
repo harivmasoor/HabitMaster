@@ -4,7 +4,6 @@ import BackgroundTasks
 @main
 struct HabitMasterApp: App {
     @UIApplicationDelegateAdaptor(CustomAppDelegate.self) var appDelegate
-    @ObservedObject private var habitListViewModel = HabitListViewModel()
 
     init() {
         setupBackgroundTask()
@@ -13,7 +12,6 @@ struct HabitMasterApp: App {
     var body: some Scene {
         WindowGroup {
             HomeView()
-                .environmentObject(habitListViewModel)
                 .environmentObject(appDelegate.habitListViewModel)
         }
     }
@@ -24,7 +22,7 @@ extension HabitMasterApp {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.example.HabitMaster.resetStreaks", using: nil) { task in
             self.handleResetStreaks(task: task as! BGAppRefreshTask)
         }
-        habitListViewModel.resetStreaksIfNeeded()
+        appDelegate.habitListViewModel.resetStreaksIfNeeded()
     }
     
     private func scheduleBackgroundTask() {
@@ -44,7 +42,7 @@ extension HabitMasterApp {
         }
         
         DispatchQueue.main.async {
-            self.habitListViewModel.resetStreaksIfNeeded()
+            self.appDelegate.habitListViewModel.resetStreaksIfNeeded()
         }
         task.setTaskCompleted(success: true)
         

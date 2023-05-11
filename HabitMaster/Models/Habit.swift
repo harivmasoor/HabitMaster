@@ -7,7 +7,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     @Published var name: String
     @Published var subtitle: String
     @Published var isCompleted: Bool
-    var creationDate: Date
+    @Published var creationDate: Date
     @Published var completionDates: [Date]
     @Published var longestStreak: Int
     @Published var currentStreak: Int
@@ -69,6 +69,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         try container.encode(longestStreak, forKey: .longestStreak)
         try container.encode(currentStreak, forKey: .currentStreak)
         try container.encode(completionDate, forKey: .completionDate)
+        try container.encode(isCompletedYesterday, forKey: .isCompletedYesterday)
     }
     
     static func ==(lhs: Habit, rhs: Habit) -> Bool {
@@ -82,7 +83,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     func toggleCompletion() {
         let currentDate = Date()
         let calendar = Calendar.current
-        
+
         if !isCompleted {
             isCompleted = true
             completionDates.append(currentDate)
@@ -114,8 +115,6 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
             // Update streaks based on completion dates
             updateStreaks()
         }
-        
-        completionDate = currentDate
     }
 
     
