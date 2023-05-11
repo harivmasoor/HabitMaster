@@ -43,7 +43,8 @@ struct HabitCompletionDateView: View {
 
 
 struct HabitCompletionDateView_Previews: PreviewProvider {
-    @State static private var previewHabit = Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date())
+    @State static private var previewHabit = Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date(), isCompletedYesterday: false)
+
 
     static var previews: some View {
         HabitCompletionDateView(habit: $previewHabit)

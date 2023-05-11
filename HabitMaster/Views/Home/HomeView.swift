@@ -12,7 +12,10 @@ struct HomeView: View {
             content
                 .background(Color.gray.opacity(0.1))
                 .edgesIgnoringSafeArea(.bottom)
-                .onAppear { habitListViewModel.resetStreaksIfNeeded() }
+                .onAppear {
+                    habitListViewModel.resetHabitsIfNeeded()
+                    habitListViewModel.resetStreaksIfNeeded()
+                }
         }
         .onChange(of: scenePhase, perform: onScenePhaseChange)
     }
@@ -20,13 +23,15 @@ struct HomeView: View {
     private var content: some View {
         VStack {
             List {
-                ForEach(habitListViewModel.habits, id: \.id) { habit in
+                ForEach(habitListViewModel.habits.indices, id: \.self) { index in
+                    let habit = habitListViewModel.habits[index]
                     NavigationLink(destination: HabitDetailView(habit: habit).environmentObject(habitListViewModel)) {
-                        HabitRowView(habit: habit, index: habitListViewModel.getIndex(byId: habit.id)!)
+                        HabitRowView(habit: habit, index: index)
                             .environmentObject(habitListViewModel)
                     }
                     .padding(.vertical, 8) // Add vertical padding to habit rows
                 }
+
                 .onDelete(perform: habitListViewModel.deleteHabit)
 
             }
@@ -66,20 +71,28 @@ struct HomeView: View {
         }
     }
 
+    func timeRemainingUntilMidnight() -> TimeInterval {
+        let calendar = Calendar.current
+        let now = Date()
+        let midnight = calendar.startOfDay(for: now).addingTimeInterval(24 * 60 * 60)
+        return midnight.timeIntervalSince(now)
+    }
+
+    
+    private func onScenePhaseChange(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            habitListViewModel.resetHabitsIfNeeded()
+            habitListViewModel.resetStreaksIfNeeded()
+        default:
+            break
+        }
+    }
     private func formattedTimeRemainingUntilMidnight() -> String {
         let remaining = habitListViewModel.timeRemainingUntilMidnight()
         let hours = Int(remaining / 3600)
         let minutes = Int((remaining.truncatingRemainder(dividingBy: 3600)) / 60)
         return "\(hours)h \(minutes)m"
-    }
-    
-    private func onScenePhaseChange(_ phase: ScenePhase) {
-        switch phase {
-        case .active:
-            habitListViewModel.resetStreaksIfNeeded()
-        default:
-            break
-        }
     }
 }
 
@@ -89,6 +102,8 @@ struct HomeView_Previews: PreviewProvider {
             .environmentObject(HabitListViewModel())
     }
 }
+
+
 
 
 

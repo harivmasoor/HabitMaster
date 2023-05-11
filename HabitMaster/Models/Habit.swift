@@ -12,8 +12,9 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     @Published var longestStreak: Int
     @Published var currentStreak: Int
     @Published var completionDate: Date
+    @Published var isCompletedYesterday: Bool
     
-    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date()) {
+    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date(),isCompletedYesterday: Bool) {
         self.id = id
         self.name = name
         self.subtitle = subtitle
@@ -23,10 +24,11 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         self.longestStreak = longestStreak
         self.currentStreak = currentStreak
         self.completionDate = completionDate
+        self.isCompletedYesterday = isCompletedYesterday
     }
     
     convenience init(name: String, subtitle: String) {
-        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date())
+        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date(),isCompletedYesterday: false)
     }
     
     var completionDateFormatted: String {
@@ -39,7 +41,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     
     // MARK: - Codable
     enum CodingKeys: String, CodingKey {
-        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate
+        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate, isCompletedYesterday
     }
     
     init(from decoder: Decoder) throws {
@@ -53,6 +55,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         longestStreak = try container.decode(Int.self, forKey: .longestStreak)
         currentStreak = try container.decode(Int.self, forKey: .currentStreak)
         completionDate = try container.decode(Date.self, forKey: .completionDate)
+        isCompletedYesterday = try container.decode(Bool.self, forKey: .isCompletedYesterday)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -102,6 +105,11 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
                 if currentStreak > 0 {
                     currentStreak -= 1
                 }
+                
+                // Update longest streak if the habit was toggled off on the same day
+                if currentStreak < longestStreak {
+                    longestStreak = currentStreak
+                }
             }
             // Update streaks based on completion dates
             updateStreaks()
@@ -109,6 +117,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         
         completionDate = currentDate
     }
+
     
     func updateStreaks() {
         currentStreak = 0
