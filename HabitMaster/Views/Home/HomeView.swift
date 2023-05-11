@@ -20,13 +20,15 @@ struct HomeView: View {
     private var content: some View {
         VStack {
             List {
-                ForEach(habitListViewModel.habits.indices, id: \.self) { index in
-                    NavigationLink(destination: HabitDetailView(index: index).environmentObject(habitListViewModel)) {
-                        HabitRowView(index: index).environmentObject(habitListViewModel)
+                ForEach(habitListViewModel.habits, id: \.id) { habit in
+                    NavigationLink(destination: HabitDetailView(habit: habit).environmentObject(habitListViewModel)) {
+                        HabitRowView(habit: habit, index: habitListViewModel.getIndex(byId: habit.id)!)
+                            .environmentObject(habitListViewModel)
                     }
                     .padding(.vertical, 8) // Add vertical padding to habit rows
                 }
                 .onDelete(perform: habitListViewModel.deleteHabit)
+
             }
             .listStyle(PlainListStyle())
             .padding(.top, 16)
@@ -60,6 +62,7 @@ struct HomeView: View {
                         .environmentObject(habitListViewModel)
                 }
             }
+
         }
     }
 
@@ -86,7 +89,6 @@ struct HomeView_Previews: PreviewProvider {
             .environmentObject(HabitListViewModel())
     }
 }
-
 
 
 

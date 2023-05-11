@@ -3,6 +3,7 @@ import BackgroundTasks
 
 @main
 struct HabitMasterApp: App {
+    @UIApplicationDelegateAdaptor(CustomAppDelegate.self) var appDelegate
     @ObservedObject private var habitListViewModel = HabitListViewModel()
 
     init() {
@@ -13,6 +14,7 @@ struct HabitMasterApp: App {
         WindowGroup {
             HomeView()
                 .environmentObject(habitListViewModel)
+                .environmentObject(appDelegate.habitListViewModel)
         }
     }
 }

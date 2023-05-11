@@ -1,46 +1,55 @@
 import SwiftUI
 
 struct HabitDetailView: View {
-    let index: Int
+    var habit: Habit
     @EnvironmentObject var habitListViewModel: HabitListViewModel
-    
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
     var body: some View {
-        ScrollView {
-            VStack {
-                Spacer()
-                    .frame(height: UIScreen.main.bounds.height * 0.20)
-                
-                HabitDescriptionView(habitDescription: $habitListViewModel.habits[index].subtitle)
-                    .padding(.horizontal)
-                
-                HabitCompletionDateView(habit: $habitListViewModel.habits[index])
-                    .padding(.horizontal)
-                
-                VStack(alignment: .center, spacing: 10) {
-                    Text("Current Streak: \(habitListViewModel.habits[index].currentStreak)")
-                        .font(.headline)
-                    Text("Longest Streak: \(habitListViewModel.habits[index].longestStreak)")
-                        .font(.headline)
+        if let index = habitListViewModel.habits.firstIndex(where: { $0.id == habit.id }) {
+            return AnyView(
+                ScrollView {
+                    VStack {
+                        Spacer()
+                            .frame(height: UIScreen.main.bounds.height * 0.20)
+                        
+                        HabitDescriptionView(habitDescription: $habitListViewModel.habits[index].subtitle)
+                            .padding(.horizontal)
+                        
+                        HabitCompletionDateView(habit: $habitListViewModel.habits[index])
+                            .padding(.horizontal)
+                        
+                        VStack(alignment: .center, spacing: 10) {
+                            Text("Current Streak: \(habitListViewModel.habits[index].currentStreak)")
+                                .font(.headline)
+                            Text("Longest Streak: \(habitListViewModel.habits[index].longestStreak)")
+                                .font(.headline)
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                        .padding(.bottom)
+                        
+                        Spacer()
+                        
+                        deleteHabitButton(index: index)
+                    }
+                    .padding(.top, 20)
                 }
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .padding(.bottom)
-                
-                Spacer()
-                
-                deleteHabitButton
-            }
-            .padding(.top, 20)
+                .edgesIgnoringSafeArea(.all)
+                .background(Color(.systemGray6)) // Set the background color to grey
+                .navigationBarTitle(habitListViewModel.habits[index].name, displayMode: .inline)
+            )
+        } else {
+            // Handle the case where the habit is not found
+            return AnyView(Text("Habit not found"))
         }
-        .edgesIgnoringSafeArea(.all)
-        .background(Color(.systemGray6)) // Set the background color to grey
-        .navigationBarTitle(habitListViewModel.habits[index].name, displayMode: .inline)
     }
     
-    private var deleteHabitButton: some View {
+    private func deleteHabitButton(index: Int) -> some View {
         Button(action: {
-            // Add your delete habit action here
+            habitListViewModel.deleteHabit(id: habit.id)
+            self.presentationMode.wrappedValue.dismiss()
         }) {
             Text("Delete Habit")
                 .font(.headline)
@@ -55,16 +64,16 @@ struct HabitDetailView: View {
     }
 }
 
-
-
 struct HabitDetailView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = HabitListViewModel()
-        viewModel.habits.append(Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date()))
-        return HabitDetailView(index: 0)
+        let habit = Habit(name: "Meditate", subtitle: "Meditate for 5 minutes today", completionDate: Date())
+        viewModel.habits.append(habit)
+        return HabitDetailView(habit: habit)
             .environmentObject(viewModel)
     }
 }
+
 
 
 

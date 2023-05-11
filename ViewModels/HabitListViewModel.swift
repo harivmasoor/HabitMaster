@@ -1,5 +1,21 @@
 import Foundation
 import Combine
+import UIKit
+import SwiftUI
+
+class CustomAppDelegate: UIResponder, UIApplicationDelegate {
+    let habitListViewModel = HabitListViewModel()
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        NotificationCenter.default.addObserver(self, selector: #selector(saveHabits), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveHabits), name: UIApplication.willTerminateNotification, object: nil)
+        return true
+    }
+
+    @objc func saveHabits() {
+        habitListViewModel.saveHabits()
+    }
+}
 
 class HabitListViewModel: ObservableObject {
     @Published var habits: [Habit] = [] {
@@ -34,6 +50,14 @@ class HabitListViewModel: ObservableObject {
         } else {
             self.habits = []
         }
+        
+        NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.saveHabits()
+        }
+        
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.saveHabits()
+        }
     }
     
     func saveHabits() {
@@ -42,9 +66,14 @@ class HabitListViewModel: ObservableObject {
             UserDefaults.standard.set(encodedHabits, forKey: "habits")
         }
     }
-    
-    func deleteHabit(at indexSet: IndexSet) {
-        habits.remove(atOffsets: indexSet)
+    func deleteHabit(id: UUID) {
+        if let index = habits.firstIndex(where: { $0.id == id }) {
+            habits.remove(at: index)
+            saveHabits()
+        }
+    }
+    func deleteHabit(atOffsets offsets: IndexSet) {
+        habits.remove(atOffsets: offsets)
         saveHabits()
     }
     
@@ -57,13 +86,18 @@ class HabitListViewModel: ObservableObject {
     
     func updateHabitCompletionState(id: UUID, isCompleted: Bool) {
         if let index = habits.firstIndex(where: { $0.id == id }) {
-            habits[index].isCompleted = isCompleted
-            if isCompleted {
-                habits[index].currentStreak += 1
-                habits[index].completionDate = Date() // Updating completion date
-            } else if habits[index].currentStreak > 0 {
-                habits[index].currentStreak -= 1
+            let habit = habits[index]
+            
+            // Only update the streak if the state is actually changing
+            if habit.isCompleted != isCompleted {
+                if isCompleted {
+                    habit.currentStreak += 1
+                } else if habit.currentStreak > 0 {
+                    habit.currentStreak -= 1
+                }
             }
+
+            habit.isCompleted = isCompleted
         }
     }
 

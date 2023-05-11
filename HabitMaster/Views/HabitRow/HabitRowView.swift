@@ -1,20 +1,26 @@
+// HabitRowView
+
 import SwiftUI
 
 struct HabitRowView: View {
-    var index: Int
+    @ObservedObject var habit: Habit
     @EnvironmentObject var habitListViewModel: HabitListViewModel
+    let index: Int
     
     var body: some View {
         let isOn = Binding<Bool>(
-            get: { habitListViewModel.habits[index].isCompleted },
+            get: { self.habit.isCompleted },
             set: { newValue in
-                habitListViewModel.updateHabitCompletionState(id: habitListViewModel.habits[index].id, isCompleted: newValue)
+                if self.habit.isCompleted != newValue {
+                    self.habit.toggleCompletion()
+                    self.habitListViewModel.saveHabits()
+                }
             }
         )
         
         return HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text(habitListViewModel.habits[index].name)
+                Text(habit.name)
                     .font(.headline)
             }
             Spacer()
@@ -22,22 +28,31 @@ struct HabitRowView: View {
                 .foregroundColor(.yellow)
                 .frame(width: 30, height: 30)
                 .overlay(
-                    Text("\(habitListViewModel.habits[index].currentStreak)")
+                    Text("\(habit.currentStreak)")
                         .font(.system(size: 12, weight: .bold))
                         .foregroundColor(.black)
                 )
             Toggle("", isOn: isOn)
                 .labelsHidden()
         }
+        .padding(.vertical, 8)
+        .swipeActions {
+            Button {
+                habitListViewModel.deleteHabit(id: habit.id) // delete by id
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+            .tint(.red)
+        }
     }
-}
+    }
 
 struct HabitRowView_Previews: PreviewProvider {
     static var previews: some View {
         let habit = Habit(name: "Meditation", subtitle: "Meditate for 10 minutes")
         let viewModel = HabitListViewModel()
         viewModel.habits.append(habit)
-        return HabitRowView(index: 0)
+        return HabitRowView(habit: viewModel.habits[0], index: 0)
             .environmentObject(viewModel)
             .previewLayout(.sizeThatFits)
             .padding()
