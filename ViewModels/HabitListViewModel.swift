@@ -104,19 +104,22 @@ class HabitListViewModel: ObservableObject {
             let isSameDay = calendar.isDateInToday(habit.completionDate)
             
             if !isSameDay {
-                habit.isCompleted = false
-                habit.currentStreak = 0
-                
-                if !habit.isCompletedYesterday && habit.longestStreak > 0 {
-                    habit.longestStreak -= 1
+                if habit.isCompleted {
+                    habit.isCompletedYesterday = true
+                    habit.isCompleted = false
+                    if habit.currentStreak > habit.longestStreak {
+                        habit.longestStreak = habit.currentStreak
+                    }
+                } else {
+                    habit.isCompletedYesterday = false
+                    habit.currentStreak = 0
                 }
-                
-                habit.isCompletedYesterday = false
+                habit.completionDate = Date()
             }
-            
-            saveHabits()
         }
+        saveHabits()
     }
+
 
     func getIndex(byId id: UUID) -> Int? {
         return habits.firstIndex(where: { $0.id == id })
