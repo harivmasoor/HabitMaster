@@ -14,10 +14,12 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     @Published var completionDate: Date
     @Published var isCompletedYesterday: Bool
     @Published var isCompletionDateManuallySet: Bool
-    var lastCompletionDate: Date?
+    @Published var lastCompletionDate: Date?
+    @Published var completedToday: Bool = false
+    @Published var wasToggledOff: Bool = false
     
     
-    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date(),isCompletedYesterday: Bool,isCompletionDateManuallySet: Bool = true, lastCompletionDate: Date? ) {
+    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date(),isCompletedYesterday: Bool,isCompletionDateManuallySet: Bool = true, lastCompletionDate: Date?,completedToday: Bool = false, wasToggledOff: Bool = false ) {
         self.id = id
         self.name = name
         self.subtitle = subtitle
@@ -29,10 +31,14 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         self.completionDate = completionDate
         self.isCompletedYesterday = isCompletedYesterday
         self.isCompletionDateManuallySet = isCompletionDateManuallySet
+        self.lastCompletionDate = lastCompletionDate
+        self.completedToday = completedToday
+        self.wasToggledOff = wasToggledOff
+
     }
     
     convenience init(name: String, subtitle: String) {
-        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date(),isCompletedYesterday: false, isCompletionDateManuallySet: true, lastCompletionDate: Date())
+        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date(),isCompletedYesterday: false, isCompletionDateManuallySet: true, lastCompletionDate: Date(), completedToday: false, wasToggledOff: false)
     }
     
     var completionDateFormatted: String {
@@ -45,7 +51,8 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     
     // MARK: - Codable
     enum CodingKeys: String, CodingKey {
-        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate, isCompletedYesterday, isCompletionDateManuallySet, lastCompletionDate
+        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate, isCompletedYesterday, isCompletionDateManuallySet, lastCompletionDate, completedToday, wasToggledOff
+    
     }
     
     init(from decoder: Decoder) throws {
@@ -62,6 +69,9 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         isCompletedYesterday = try container.decode(Bool.self, forKey: .isCompletedYesterday)
         isCompletionDateManuallySet = try container.decode(Bool.self, forKey: .isCompletionDateManuallySet)
         lastCompletionDate = try container.decode(Date.self, forKey: .lastCompletionDate)
+        completedToday = try container.decode(Bool.self, forKey: .completedToday)
+        wasToggledOff = try container.decode(Bool.self, forKey: .wasToggledOff)
+    
     }
     
     func encode(to encoder: Encoder) throws {
@@ -78,6 +88,9 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         try container.encode(isCompletedYesterday, forKey: .isCompletedYesterday)
         try container.encode(isCompletionDateManuallySet, forKey: .isCompletionDateManuallySet)
         try container.encode(lastCompletionDate, forKey: .lastCompletionDate)
+        try container.encode(completedToday, forKey: .completedToday)
+        try container.encode(wasToggledOff, forKey: .wasToggledOff)
+    
     }
     
     static func ==(lhs: Habit, rhs: Habit) -> Bool {

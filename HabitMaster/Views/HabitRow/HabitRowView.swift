@@ -9,11 +9,20 @@ struct HabitRowView: View {
         let isOn = Binding<Bool>(
             get: { self.habit.isCompleted },
             set: { newValue in
-                if self.habit.isCompleted != newValue {
-                    self.habitListViewModel.updateHabitCompletionState(id: self.habit.id, isCompleted: newValue)
+                if newValue {
+                    if !self.habit.isCompleted {
+                        self.habitListViewModel.completeHabit(self.habit)
+                    }
+                } else {
+                    if self.habit.isCompleted {
+                        self.habitListViewModel.incompleteHabit(self.habit)
+                    }
                 }
             }
         )
+
+
+
         
         return HStack {
             VStack(alignment: .leading, spacing: 5) {

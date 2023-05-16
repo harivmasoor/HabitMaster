@@ -98,31 +98,16 @@ class HabitListViewModel: ObservableObject {
 
     func resetHabitsIfNeeded() {
         let calendar = Calendar.current
-        for index in habits.indices {
-            let habit = habits[index]
-            let isSameDay = habit.completionDates.last.map { calendar.isDateInToday($0) } ?? false
-            
+        for habit in habits {
+            let isSameDay = habit.lastCompletionDate.map { calendar.isDateInToday($0) } ?? false
             if !isSameDay {
                 habit.isCompleted = false
-                habit.isCompletedYesterday = false
-                habit.currentStreak = 0
-                
-                if habit.currentStreak < habit.longestStreak {
-                    habit.longestStreak = habit.currentStreak
-                }
-                
-                if !habit.isCompletionDateManuallySet {
-                    habit.completionDate = Date()
-                }
+                habit.completedToday = false
+                saveHabits()
             }
-            // Reset isCompletionDateManuallySet at the start of a new day
-            if calendar.isDateInToday(habit.completionDate) {
-                habit.isCompletionDateManuallySet = false
-            }
-
-            saveHabits()
         }
     }
+
 
     func getIndex(byId id: UUID) -> Int? {
         return habits.firstIndex(where: { $0.id == id })
@@ -156,7 +141,44 @@ class HabitListViewModel: ObservableObject {
         let nextMidnight = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))!
         return nextMidnight.timeIntervalSince(now)
     }
+    func completeHabit(_ habit: Habit) {
+        let calendar = Calendar.current
+        let lastCompletionDate = habit.completionDates.last
 
+        habit.isCompleted = true
+
+        if !habit.completedToday {
+            habit.completedToday = true
+            habit.currentStreak += 1
+            habit.completionDates.append(Date())
+
+            if habit.currentStreak > habit.longestStreak {
+                habit.longestStreak = habit.currentStreak
+            }
+        } else if let lastCompletionDate = lastCompletionDate, calendar.isDateInToday(lastCompletionDate) {
+            habit.completedToday = true
+        } else {
+            habit.completedToday = false
+        }
+
+        saveHabits()
+    }
+
+    func incompleteHabit(_ habit: Habit) {
+        habit.isCompleted = false
+
+        if habit.completedToday {
+            habit.completedToday = false
+            habit.currentStreak -= 1
+            habit.completionDates.removeLast()
+
+            if habit.currentStreak < habit.longestStreak {
+                habit.longestStreak = habit.currentStreak
+            }
+        }
+
+        saveHabits()
+    }
 }
 
 
