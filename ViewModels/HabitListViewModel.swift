@@ -27,10 +27,25 @@ class HabitListViewModel: ObservableObject {
     
     init() {
         loadHabits()
+        resetStreaksIfNeeded()
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
             self?.saveHabits()
         }
+        
+        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.resetStreaksIfNeeded()
+        }
+
+        let timer = Timer(fire: Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: Date()))!,
+                          interval: 24 * 60 * 60,
+                          repeats: true,
+                          block: { [weak self] _ in
+                            self?.resetStreaksIfNeeded()
+                          })
+
+        RunLoop.main.add(timer, forMode: .common)
     }
+
     
     func loadHabits() {
         let decoder = JSONDecoder()
@@ -74,36 +89,9 @@ class HabitListViewModel: ObservableObject {
             let habit = habits[index]
 
             if isCompleted {
-                habit.currentStreak += 1
-                habit.completionDates.append(Date())
-                habit.isCompletedYesterday = true
-                
-                if habit.currentStreak > habit.longestStreak {
-                    habit.longestStreak = habit.currentStreak
-                }
+                completeHabit(habit)
             } else {
-                habit.currentStreak = 0
-                habit.completionDates.removeLast()
-
-                if habit.currentStreak < habit.longestStreak {
-                    habit.longestStreak = habit.currentStreak
-                }
-            }
-
-            habit.isCompleted = isCompleted
-            saveHabits()
-        }
-    }
-
-
-    func resetHabitsIfNeeded() {
-        let calendar = Calendar.current
-        for habit in habits {
-            let isSameDay = habit.lastCompletionDate.map { calendar.isDateInToday($0) } ?? false
-            if !isSameDay {
-                habit.isCompleted = false
-                habit.completedToday = false
-                saveHabits()
+                incompleteHabit(habit)
             }
         }
     }
@@ -115,26 +103,27 @@ class HabitListViewModel: ObservableObject {
     
     func resetStreaksIfNeeded() {
         let calendar = Calendar.current
-        for index in habits.indices {
-            let habit = habits[index]
-            let isSameDay = habit.completionDates.last.map { calendar.isDateInToday($0) } ?? false
-            
-            // If it's not the same day and the habit was not completed yesterday, then reset the streak
-            if !isSameDay && !habit.isCompletedYesterday {
+        for habit in habits {
+            let isSameDay = habit.lastCompletionDate.map { calendar.isDateInToday($0) } ?? false
+            let isPreviousDay = habit.lastCompletionDate.map { calendar.isDateInYesterday($0) } ?? false
+
+            if !isSameDay && !isPreviousDay && habit.currentStreak > 0 {
                 habit.currentStreak = 0
-                habit.isCompletedYesterday = false
-                if habit.currentStreak < habit.longestStreak {
-                    habit.longestStreak = habit.currentStreak
-                }
+            } else if isPreviousDay && habit.currentStreak > 0 && !habit.isCompleted {
+                habit.currentStreak += 1
             }
-            // If it is the same day and the habit was completed yesterday, then keep the streak and set isCompletedYesterday to false for the next check
-            else if isSameDay && habit.isCompletedYesterday {
-                habit.isCompletedYesterday = false
+
+            if !isSameDay {
+                habit.isCompleted = false
             }
-            
+
             saveHabits()
         }
     }
+
+
+
+    
     func timeRemainingUntilMidnight() -> TimeInterval {
         let calendar = Calendar.current
         let now = Date()
@@ -142,23 +131,13 @@ class HabitListViewModel: ObservableObject {
         return nextMidnight.timeIntervalSince(now)
     }
     func completeHabit(_ habit: Habit) {
-        let calendar = Calendar.current
-        let lastCompletionDate = habit.completionDates.last
-
         habit.isCompleted = true
+        habit.completedToday = true
+        habit.currentStreak += 1
+        habit.lastCompletionDate = Date()
 
-        if !habit.completedToday {
-            habit.completedToday = true
-            habit.currentStreak += 1
-            habit.completionDates.append(Date())
-
-            if habit.currentStreak > habit.longestStreak {
-                habit.longestStreak = habit.currentStreak
-            }
-        } else if let lastCompletionDate = lastCompletionDate, calendar.isDateInToday(lastCompletionDate) {
-            habit.completedToday = true
-        } else {
-            habit.completedToday = false
+        if habit.currentStreak > habit.longestStreak {
+            habit.longestStreak = habit.currentStreak
         }
 
         saveHabits()
@@ -166,19 +145,14 @@ class HabitListViewModel: ObservableObject {
 
     func incompleteHabit(_ habit: Habit) {
         habit.isCompleted = false
-
-        if habit.completedToday {
-            habit.completedToday = false
-            habit.currentStreak -= 1
-            habit.completionDates.removeLast()
-
-            if habit.currentStreak < habit.longestStreak {
-                habit.longestStreak = habit.currentStreak
-            }
-        }
+        habit.completedToday = false
+        habit.currentStreak = max(0, habit.currentStreak - 1)
+        habit.lastCompletionDate = nil
 
         saveHabits()
     }
+
+
 }
 
 

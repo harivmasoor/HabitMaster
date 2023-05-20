@@ -14,8 +14,9 @@ struct HomeView: View {
                 .background(Color.gray.opacity(0.1))
                 .edgesIgnoringSafeArea(.bottom)
                 .onAppear {
-                    habitListViewModel.resetHabitsIfNeeded()
+                    print("HomeView rsin")
                     habitListViewModel.resetStreaksIfNeeded()
+                    habitListViewModel.saveHabits()
                 }
         }
         .onChange(of: scenePhase, perform: onScenePhaseChange)
@@ -79,16 +80,16 @@ struct HomeView: View {
         return midnight.timeIntervalSince(now)
     }
 
-    
     private func onScenePhaseChange(_ phase: ScenePhase) {
         switch phase {
-        case .active:
-            habitListViewModel.resetHabitsIfNeeded()
-            habitListViewModel.resetStreaksIfNeeded()
+        case .background, .inactive:
+            // Handle background or inactive state if needed
+            break
         default:
             break
         }
     }
+    
     private func formattedTimeRemainingUntilMidnight() -> String {
         let remaining = habitListViewModel.timeRemainingUntilMidnight()
         let hours = Int(remaining / 3600)

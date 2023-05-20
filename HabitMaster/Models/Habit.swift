@@ -12,14 +12,13 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     @Published var longestStreak: Int
     @Published var currentStreak: Int
     @Published var completionDate: Date
-    @Published var isCompletedYesterday: Bool
     @Published var isCompletionDateManuallySet: Bool
     @Published var lastCompletionDate: Date?
     @Published var completedToday: Bool = false
     @Published var wasToggledOff: Bool = false
     
     
-    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date(),isCompletedYesterday: Bool,isCompletionDateManuallySet: Bool = true, lastCompletionDate: Date?,completedToday: Bool = false, wasToggledOff: Bool = false ) {
+    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date(),isCompletionDateManuallySet: Bool = true, lastCompletionDate: Date?,completedToday: Bool = false, wasToggledOff: Bool = false ) {
         self.id = id
         self.name = name
         self.subtitle = subtitle
@@ -29,7 +28,6 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         self.longestStreak = longestStreak
         self.currentStreak = currentStreak
         self.completionDate = completionDate
-        self.isCompletedYesterday = isCompletedYesterday
         self.isCompletionDateManuallySet = isCompletionDateManuallySet
         self.lastCompletionDate = lastCompletionDate
         self.completedToday = completedToday
@@ -38,7 +36,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     }
     
     convenience init(name: String, subtitle: String) {
-        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date(),isCompletedYesterday: false, isCompletionDateManuallySet: true, lastCompletionDate: Date(), completedToday: false, wasToggledOff: false)
+        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date(), isCompletionDateManuallySet: true, lastCompletionDate: Date(), completedToday: false, wasToggledOff: false)
     }
     
     var completionDateFormatted: String {
@@ -51,7 +49,7 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     
     // MARK: - Codable
     enum CodingKeys: String, CodingKey {
-        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate, isCompletedYesterday, isCompletionDateManuallySet, lastCompletionDate, completedToday, wasToggledOff
+        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate, isCompletionDateManuallySet, lastCompletionDate, completedToday, wasToggledOff
     
     }
     
@@ -66,7 +64,6 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         longestStreak = try container.decode(Int.self, forKey: .longestStreak)
         currentStreak = try container.decode(Int.self, forKey: .currentStreak)
         completionDate = try container.decode(Date.self, forKey: .completionDate)
-        isCompletedYesterday = try container.decode(Bool.self, forKey: .isCompletedYesterday)
         isCompletionDateManuallySet = try container.decode(Bool.self, forKey: .isCompletionDateManuallySet)
         lastCompletionDate = try container.decode(Date.self, forKey: .lastCompletionDate)
         completedToday = try container.decode(Bool.self, forKey: .completedToday)
@@ -85,7 +82,6 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         try container.encode(longestStreak, forKey: .longestStreak)
         try container.encode(currentStreak, forKey: .currentStreak)
         try container.encode(completionDate, forKey: .completionDate)
-        try container.encode(isCompletedYesterday, forKey: .isCompletedYesterday)
         try container.encode(isCompletionDateManuallySet, forKey: .isCompletionDateManuallySet)
         try container.encode(lastCompletionDate, forKey: .lastCompletionDate)
         try container.encode(completedToday, forKey: .completedToday)

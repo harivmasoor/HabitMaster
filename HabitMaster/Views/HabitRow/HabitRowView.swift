@@ -12,17 +12,16 @@ struct HabitRowView: View {
                 if newValue {
                     if !self.habit.isCompleted {
                         self.habitListViewModel.completeHabit(self.habit)
+                        print("Completion date after toggling ON: \(self.habit.completionDate)")
                     }
                 } else {
                     if self.habit.isCompleted {
                         self.habitListViewModel.incompleteHabit(self.habit)
+                        print("Completion date after toggling OFF: \(self.habit.completionDate)")
                     }
                 }
             }
         )
-
-
-
         
         return HStack {
             VStack(alignment: .leading, spacing: 5) {
