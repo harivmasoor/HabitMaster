@@ -84,6 +84,7 @@ struct HomeView: View {
         switch phase {
         case .background, .inactive:
             // Handle background or inactive state if needed
+            habitListViewModel.promptForReview()
             break
         default:
             break

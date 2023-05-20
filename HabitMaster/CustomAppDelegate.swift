@@ -1,6 +1,5 @@
 import UIKit
 import BackgroundTasks
-import os.log
 
 class CustomAppDelegate: UIResponder, UIApplicationDelegate {
     let habitListViewModel = HabitListViewModel()

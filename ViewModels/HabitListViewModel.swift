@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import StoreKit
 
 class HabitListViewModel: ObservableObject {
     @Published var habits: [Habit] = [] {
@@ -151,8 +152,20 @@ class HabitListViewModel: ObservableObject {
 
         saveHabits()
     }
+    func shouldPromptForReview() -> Bool {
+        let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -10, to: Date()) ?? Date()
+        let lastPromptDate = UserDefaults.standard.object(forKey: "LastReviewPromptDate") as? Date ?? oneWeekAgo
+        return lastPromptDate < oneWeekAgo
+    }
 
-
+    func promptForReview() {
+        if shouldPromptForReview() {
+            if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                SKStoreReviewController.requestReview(in: scene)
+            }
+            UserDefaults.standard.set(Date(), forKey: "LastReviewPromptDate")
+        }
+    }
 }
 
 
