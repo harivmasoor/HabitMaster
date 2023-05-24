@@ -58,6 +58,8 @@ struct LongestStreaksView: View {
                 case .longestStreaks:
                     LongestStreaksView()
                         .environmentObject(viewModel)
+                case .addStepCountHabit:  // new case
+                    AddStepCountHabitView(viewModel: viewModel)
                 }
             }
         }

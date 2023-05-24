@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import SwiftUI
 import StoreKit
+import HealthKit
 
 class HabitListViewModel: ObservableObject {
     @Published var habits: [Habit] = [] {
@@ -24,11 +25,26 @@ class HabitListViewModel: ObservableObject {
             saveHabits()
         }
     }
+
+    @Published var healthKitManager = HealthKitManager()
+
     private var habitSubscriptions: [UUID: AnyCancellable] = [:]
     
     init() {
         loadHabits()
         resetStreaksIfNeeded()
+        
+        _ = healthKitManager.$steps.sink { [weak self] newSteps in
+            for habit in self?.habits ?? [] where habit.goalStepCount > 0 {
+                habit.currentStepCount = newSteps
+                if newSteps >= habit.goalStepCount {
+                    self?.completeHabit(habit)
+                } else {
+                    self?.incompleteHabit(habit)
+                }
+            }
+        }
+        
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
             self?.saveHabits()
         }
@@ -166,6 +182,27 @@ class HabitListViewModel: ObservableObject {
             UserDefaults.standard.set(Date(), forKey: "LastReviewPromptDate")
         }
     }
+    func updateCurrentStepCount(for habit: Habit) {
+    let healthStore = HKHealthStore()
+    let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+    let date = Date()
+    let calendar = Calendar.current
+    let startOfDay = calendar.startOfDay(for: date)
+    let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: date, options: .strictStartDate)
+    let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { (_, result, error) in
+        guard let result = result, let sum = result.sumQuantity() else {
+            if let error = error {
+                print("Error retrieving step count: \(error.localizedDescription)")
+            }
+            return
+        }
+        DispatchQueue.main.async {
+            habit.currentStepCount = Int(sum.doubleValue(for: .count()))
+            print("Current steps for \(habit.name): \(habit.currentStepCount)")
+        }
+    }
+    healthStore.execute(query)
+}
 }
 
 

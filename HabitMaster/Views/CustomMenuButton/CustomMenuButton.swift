@@ -5,6 +5,7 @@ struct CustomMenuButton: View {
         case editHabit(habit: Habit)
         case longestStreaks
         case addHabit
+        case addStepCountHabit  // new case
 
         var id: Int {
             switch self {
@@ -14,6 +15,8 @@ struct CustomMenuButton: View {
                 return 1
             case .addHabit:
                 return 2
+            case .addStepCountHabit:  // return a unique id for this case
+                return 3
             }
         }
     }
@@ -37,6 +40,12 @@ struct CustomMenuButton: View {
                 activeSheet = .addHabit
             }) {
                 Label("Add Habit", systemImage: "plus")
+            }
+
+            Button(action: {   // new button for adding a step count habit
+                activeSheet = .addStepCountHabit
+            }) {
+                Label("Add Step Count Habit", systemImage: "plus.square")
             }
 
             if currentView == .longestStreaks {
@@ -65,7 +74,6 @@ struct CustomMenuButton_Previews: PreviewProvider {
         CustomMenuButton(activeSheet: .constant(nil), currentView: .home)
     }
 }
-
 
 
 

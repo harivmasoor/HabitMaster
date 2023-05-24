@@ -16,6 +16,8 @@
 		5F5D4B8A2A0A027200212AB3 /* HabitDescriptionEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B892A0A027200212AB3 /* HabitDescriptionEditor.swift */; };
 		5F5D4B8C2A0A02A300212AB3 /* HabitCompletionDateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B8B2A0A02A300212AB3 /* HabitCompletionDateEditor.swift */; };
 		5F5D4B8E2A0A9B0200212AB3 /* MainButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B8D2A0A9B0200212AB3 /* MainButtonStyle.swift */; };
+		5F6289A62A1D77EB0036D983 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6289A52A1D77EB0036D983 /* HealthKitManager.swift */; };
+		5F6289A82A1D7A2B0036D983 /* AddStepCountHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6289A72A1D7A2B0036D983 /* AddStepCountHabitView.swift */; };
 		5F84F4A02A041A190062F287 /* HabitMasterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F84F49F2A041A190062F287 /* HabitMasterApp.swift */; };
 		5F84F4A42A041A1A0062F287 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F84F4A32A041A1A0062F287 /* Assets.xcassets */; };
 		5F84F4A72A041A1A0062F287 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F84F4A62A041A1A0062F287 /* Preview Assets.xcassets */; };
@@ -68,6 +70,9 @@
 		5F5D4B892A0A027200212AB3 /* HabitDescriptionEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDescriptionEditor.swift; sourceTree = "<group>"; };
 		5F5D4B8B2A0A02A300212AB3 /* HabitCompletionDateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCompletionDateEditor.swift; sourceTree = "<group>"; };
 		5F5D4B8D2A0A9B0200212AB3 /* MainButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButtonStyle.swift; sourceTree = "<group>"; };
+		5F6289A42A1D67370036D983 /* HabitMaster.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HabitMaster.entitlements; sourceTree = "<group>"; };
+		5F6289A52A1D77EB0036D983 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		5F6289A72A1D7A2B0036D983 /* AddStepCountHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepCountHabitView.swift; sourceTree = "<group>"; };
 		5F84F49C2A041A190062F287 /* HabitMaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitMaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F84F49F2A041A190062F287 /* HabitMasterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitMasterApp.swift; sourceTree = "<group>"; };
 		5F84F4A32A041A1A0062F287 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -125,6 +130,8 @@
 		5F84F4932A041A190062F287 = {
 			isa = PBXGroup;
 			children = (
+				5F6289A72A1D7A2B0036D983 /* AddStepCountHabitView.swift */,
+				5F6289A52A1D77EB0036D983 /* HealthKitManager.swift */,
 				5F84F4FE2A0466910062F287 /* ViewModels */,
 				5F84F49E2A041A190062F287 /* HabitMaster */,
 				5F84F4AF2A041A1A0062F287 /* HabitMasterTests */,
@@ -146,6 +153,7 @@
 		5F84F49E2A041A190062F287 /* HabitMaster */ = {
 			isa = PBXGroup;
 			children = (
+				5F6289A42A1D67370036D983 /* HabitMaster.entitlements */,
 				5FA0DB1E2A156324009B9D9D /* Info.plist */,
 				5F84F4A32A041A1A0062F287 /* Assets.xcassets */,
 				5F84F4DD2A0420240062F287 /* Helpers */,
@@ -463,6 +471,7 @@
 				5F84F5082A058D620062F287 /* CustomMenuButton.swift in Sources */,
 				5F5D4B3C2A097D1D00212AB3 /* HabitDescriptionView.swift in Sources */,
 				5F84F4F52A0427030062F287 /* CodableColor.swift in Sources */,
+				5F6289A82A1D7A2B0036D983 /* AddStepCountHabitView.swift in Sources */,
 				5F84F4D32A041FA00062F287 /* HomeView.swift in Sources */,
 				5F5D4B8C2A0A02A300212AB3 /* HabitCompletionDateEditor.swift in Sources */,
 				5F84F4A02A041A190062F287 /* HabitMasterApp.swift in Sources */,
@@ -480,6 +489,7 @@
 				5F84F4D52A041FBD0062F287 /* AddEditHabitView.swift in Sources */,
 				5F3F7A682A0C8B9B00E0AB9B /* CustomAppDelegate.swift in Sources */,
 				5F5D4B8A2A0A027200212AB3 /* HabitDescriptionEditor.swift in Sources */,
+				5F6289A62A1D77EB0036D983 /* HealthKitManager.swift in Sources */,
 				5F5D4B3A2A097C1300212AB3 /* HabitCompletionDateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -637,9 +647,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = HabitMaster/HabitMaster.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1.1;
+				CURRENT_PROJECT_VERSION = 1.1.2;
 				DEVELOPMENT_ASSET_PATHS = "\"HabitMaster/Preview Content\"";
 				DEVELOPMENT_TEAM = 35SA6VQ6SM;
 				ENABLE_PREVIEWS = YES;
@@ -647,6 +658,8 @@
 				INFOPLIST_FILE = HabitMaster/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = HabitCrusher;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Need step count of user for the stepping habit";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Need step count of the user for the stepping habit";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -657,7 +670,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.HabitMaster.HabitMaster.HabitMaster;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -673,9 +686,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = HabitMaster/HabitMaster.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.1.1;
+				CURRENT_PROJECT_VERSION = 1.1.2;
 				DEVELOPMENT_ASSET_PATHS = "\"HabitMaster/Preview Content\"";
 				DEVELOPMENT_TEAM = 35SA6VQ6SM;
 				ENABLE_PREVIEWS = YES;
@@ -683,6 +697,8 @@
 				INFOPLIST_FILE = HabitMaster/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = HabitCrusher;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Need step count of user for the stepping habit";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Need step count of the user for the stepping habit";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -693,7 +709,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.HabitMaster.HabitMaster.HabitMaster;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

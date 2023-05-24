@@ -67,6 +67,8 @@ struct HomeView: View {
                 case .addHabit:
                     AddEditHabitView(habitToEdit: nil)
                         .environmentObject(habitListViewModel)
+                case .addStepCountHabit:  // new case
+                    AddStepCountHabitView(viewModel: habitListViewModel)
                 }
             }
 

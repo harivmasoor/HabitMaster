@@ -16,9 +16,14 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     @Published var lastCompletionDate: Date?
     @Published var completedToday: Bool = false
     @Published var wasToggledOff: Bool = false
+    @Published var currentStepCount: Int
+    @Published var goalStepCount: Int
+    @Published var isStepped: Bool
+
     
     
-    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date(),isCompletionDateManuallySet: Bool = true, lastCompletionDate: Date?,completedToday: Bool = false, wasToggledOff: Bool = false ) {
+    
+    init(id: UUID = UUID(), name: String, subtitle: String, isCompleted: Bool = false, creationDate: Date = Date(), completionDates: [Date] = [], longestStreak: Int = 0, currentStreak: Int = 0, completionDate: Date = Date(),isCompletionDateManuallySet: Bool = true, lastCompletionDate: Date?,completedToday: Bool = false, wasToggledOff: Bool = false, currentStepCount: Int = 0, goalStepCount: Int = 0, isStepped: Bool = true ) {
         self.id = id
         self.name = name
         self.subtitle = subtitle
@@ -32,11 +37,15 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         self.lastCompletionDate = lastCompletionDate
         self.completedToday = completedToday
         self.wasToggledOff = wasToggledOff
+        self.currentStepCount = currentStepCount
+        self.goalStepCount = goalStepCount
+        self.isStepped = isStepped
+    
 
     }
     
     convenience init(name: String, subtitle: String) {
-        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date(), isCompletionDateManuallySet: true, lastCompletionDate: Date(), completedToday: false, wasToggledOff: false)
+        self.init(id: UUID(), name: name, subtitle: subtitle, isCompleted: false, creationDate: Date(), completionDates: [], longestStreak: 0, currentStreak: 0, completionDate: Date(), isCompletionDateManuallySet: true, lastCompletionDate: Date(), completedToday: false, wasToggledOff: false, currentStepCount: 0, goalStepCount: 0, isStepped: true)
     }
     
     var completionDateFormatted: String {
@@ -49,7 +58,8 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
     
     // MARK: - Codable
     enum CodingKeys: String, CodingKey {
-        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate, isCompletionDateManuallySet, lastCompletionDate, completedToday, wasToggledOff
+        case id, name, subtitle, isCompleted, creationDate, completionDates, longestStreak, currentStreak, completionDate, isCompletionDateManuallySet, lastCompletionDate, completedToday, wasToggledOff, currentStepCount, goalStepCount, isStepped
+    
     
     }
     
@@ -68,6 +78,11 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         lastCompletionDate = try container.decode(Date.self, forKey: .lastCompletionDate)
         completedToday = try container.decode(Bool.self, forKey: .completedToday)
         wasToggledOff = try container.decode(Bool.self, forKey: .wasToggledOff)
+        currentStepCount = try container.decode(Int.self, forKey: .currentStepCount)
+        goalStepCount = try container.decode(Int.self, forKey: .goalStepCount)
+        isStepped = try container.decode(Bool.self, forKey: .isStepped)
+    
+    
     
     }
     
@@ -86,6 +101,9 @@ final class Habit: ObservableObject, Identifiable, Codable, Equatable {
         try container.encode(lastCompletionDate, forKey: .lastCompletionDate)
         try container.encode(completedToday, forKey: .completedToday)
         try container.encode(wasToggledOff, forKey: .wasToggledOff)
+        try container.encode(currentStepCount, forKey: .currentStepCount)
+        try container.encode(goalStepCount, forKey: .goalStepCount)
+        try container.encode(isStepped, forKey: .isStepped)
     
     }
     
