@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F3F7A662A0B20CC00E0AB9B /* StreakViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3F7A652A0B20CC00E0AB9B /* StreakViewModel.swift */; };
+		5F3F7A662A0B20CC00E0AB9B /* StepCountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3F7A652A0B20CC00E0AB9B /* StepCountViewModel.swift */; };
 		5F3F7A682A0C8B9B00E0AB9B /* CustomAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3F7A672A0C8B9B00E0AB9B /* CustomAppDelegate.swift */; };
 		5F5D4B302A0716DF00212AB3 /* GlobalEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B2F2A0716DF00212AB3 /* GlobalEnums.swift */; };
 		5F5D4B322A076B9E00212AB3 /* CheckmarkToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D4B312A076B9E00212AB3 /* CheckmarkToggleStyle.swift */; };
@@ -41,6 +41,8 @@
 		5F84F5002A0466AE0062F287 /* HabitListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F84F4FF2A0466AE0062F287 /* HabitListViewModel.swift */; };
 		5F84F5052A0576E40062F287 /* LongestStreaksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F84F5042A0576E40062F287 /* LongestStreaksView.swift */; };
 		5F84F5082A058D620062F287 /* CustomMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F84F5072A058D620062F287 /* CustomMenuButton.swift */; };
+		5FF658672A2177F5001FD258 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF658662A2177F5001FD258 /* Step.swift */; };
+		5FF658692A21CD86001FD258 /* StepHabitRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF658682A21CD86001FD258 /* StepHabitRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,7 +63,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		5F3F7A652A0B20CC00E0AB9B /* StreakViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakViewModel.swift; sourceTree = "<group>"; };
+		5F3F7A652A0B20CC00E0AB9B /* StepCountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepCountViewModel.swift; sourceTree = "<group>"; };
 		5F3F7A672A0C8B9B00E0AB9B /* CustomAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAppDelegate.swift; sourceTree = "<group>"; };
 		5F5D4B2F2A0716DF00212AB3 /* GlobalEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEnums.swift; sourceTree = "<group>"; };
 		5F5D4B312A076B9E00212AB3 /* CheckmarkToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkToggleStyle.swift; sourceTree = "<group>"; };
@@ -100,6 +102,8 @@
 		5F84F5042A0576E40062F287 /* LongestStreaksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongestStreaksView.swift; sourceTree = "<group>"; };
 		5F84F5072A058D620062F287 /* CustomMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMenuButton.swift; sourceTree = "<group>"; };
 		5FA0DB1E2A156324009B9D9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5FF658662A2177F5001FD258 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step.swift; sourceTree = "<group>"; };
+		5FF658682A21CD86001FD258 /* StepHabitRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepHabitRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +198,7 @@
 		5F84F4CD2A041F280062F287 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5FF658662A2177F5001FD258 /* Step.swift */,
 				5F84F4CE2A041F640062F287 /* Habit.swift */,
 				5F84F4EE2A0426420062F287 /* User.swift */,
 				5F84F4F02A0426600062F287 /* Category.swift */,
@@ -208,7 +213,7 @@
 				5F84F5062A058D4E0062F287 /* CustomMenuButton */,
 				5F84F5032A0576D00062F287 /* LongestStreaks */,
 				5F84F4F92A04613E0062F287 /* HabitDetail */,
-				5F84F4F62A0429220062F287 /* HabitRow */,
+				5F84F4F62A0429220062F287 /* RowViews */,
 				5F84F4E22A0420860062F287 /* PremiumUpgrade */,
 				5F84F4E02A04205E0062F287 /* Settings */,
 				5F84F4DF2A0420500062F287 /* AddEditHabit */,
@@ -291,12 +296,13 @@
 			path = Utility;
 			sourceTree = "<group>";
 		};
-		5F84F4F62A0429220062F287 /* HabitRow */ = {
+		5F84F4F62A0429220062F287 /* RowViews */ = {
 			isa = PBXGroup;
 			children = (
 				5F84F4F72A0429320062F287 /* HabitRowView.swift */,
+				5FF658682A21CD86001FD258 /* StepHabitRowView.swift */,
 			);
-			path = HabitRow;
+			path = RowViews;
 			sourceTree = "<group>";
 		};
 		5F84F4F92A04613E0062F287 /* HabitDetail */ = {
@@ -311,7 +317,7 @@
 			isa = PBXGroup;
 			children = (
 				5F84F4FF2A0466AE0062F287 /* HabitListViewModel.swift */,
-				5F3F7A652A0B20CC00E0AB9B /* StreakViewModel.swift */,
+				5F3F7A652A0B20CC00E0AB9B /* StepCountViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -466,7 +472,7 @@
 				5F84F4ED2A0421370062F287 /* DateFormatterHelper.swift in Sources */,
 				5F84F4DB2A041FED0062F287 /* PremiumUpgradeView.swift in Sources */,
 				5F84F4FD2A0461AE0062F287 /* HabitDetailView.swift in Sources */,
-				5F3F7A662A0B20CC00E0AB9B /* StreakViewModel.swift in Sources */,
+				5F3F7A662A0B20CC00E0AB9B /* StepCountViewModel.swift in Sources */,
 				5F84F5052A0576E40062F287 /* LongestStreaksView.swift in Sources */,
 				5F84F5082A058D620062F287 /* CustomMenuButton.swift in Sources */,
 				5F5D4B3C2A097D1D00212AB3 /* HabitDescriptionView.swift in Sources */,
@@ -479,6 +485,7 @@
 				5F84F4F82A0429320062F287 /* HabitRowView.swift in Sources */,
 				5F84F4D92A041FDF0062F287 /* SettingsView.swift in Sources */,
 				5F84F4EF2A0426420062F287 /* User.swift in Sources */,
+				5FF658672A2177F5001FD258 /* Step.swift in Sources */,
 				5F5D4B8E2A0A9B0200212AB3 /* MainButtonStyle.swift in Sources */,
 				5F5D4B302A0716DF00212AB3 /* GlobalEnums.swift in Sources */,
 				5F84F4F32A04268E0062F287 /* Achievement.swift in Sources */,
@@ -488,6 +495,7 @@
 				5F84F4E52A0420C20062F287 /* Color+Extension.swift in Sources */,
 				5F84F4D52A041FBD0062F287 /* AddEditHabitView.swift in Sources */,
 				5F3F7A682A0C8B9B00E0AB9B /* CustomAppDelegate.swift in Sources */,
+				5FF658692A21CD86001FD258 /* StepHabitRowView.swift in Sources */,
 				5F5D4B8A2A0A027200212AB3 /* HabitDescriptionEditor.swift in Sources */,
 				5F6289A62A1D77EB0036D983 /* HealthKitManager.swift in Sources */,
 				5F5D4B3A2A097C1300212AB3 /* HabitCompletionDateView.swift in Sources */,

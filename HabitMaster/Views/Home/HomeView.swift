@@ -6,7 +6,8 @@ struct HomeView: View {
     @State private var showActionSheet = false
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject var habitListViewModel: HabitListViewModel
-
+    @ObservedObject var healthKitManager = HealthKitManager.shared
+    @EnvironmentObject var stepCountViewModel: StepCountViewModel
 
     var body: some View {
         NavigationView {
@@ -17,7 +18,11 @@ struct HomeView: View {
                     print("HomeView rsin")
                     habitListViewModel.resetStreaksIfNeeded()
                     habitListViewModel.saveHabits()
+                    stepCountViewModel.saveStepGoal(stepGoal: stepCountViewModel.userStepGoal)
+                    print("HomeView appeared")
+                    stepCountViewModel.loadStepGoal()
                 }
+
         }
         .onChange(of: scenePhase, perform: onScenePhaseChange)
     }
@@ -25,17 +30,35 @@ struct HomeView: View {
     private var content: some View {
         VStack {
             List {
+                // Handling StepCount Habit
+                // In your HomeView
+                ForEach(stepCountViewModel.stepCounts.indices, id: \.self) { index in
+                    if stepCountViewModel.shouldDisplayStepCountHabit {
+                        let stepCount = stepCountViewModel.stepCounts[index]
+                        ZStack {
+                            StepHabitRowView(stepCount: stepCount, healthKitManager: healthKitManager)
+                                .environmentObject(stepCountViewModel)
+                        }
+                        .padding(.vertical, 8)
+                    }
+                }
+                .onDelete(perform: stepCountViewModel.deleteStepCount)
+
+                
+                // Handling Regular Habits
                 ForEach(habitListViewModel.habits.indices, id: \.self) { index in
                     let habit = habitListViewModel.habits[index]
-                    NavigationLink(destination: HabitDetailView(habit: habit).environmentObject(habitListViewModel)) {
+                    ZStack {
                         HabitRowView(habit: habit, index: index)
                             .environmentObject(habitListViewModel)
+                        NavigationLink(destination: HabitDetailView(habit: habit).environmentObject(habitListViewModel)) {
+                            EmptyView()
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
                     .padding(.vertical, 8) // Add vertical padding to habit rows
                 }
-
                 .onDelete(perform: habitListViewModel.deleteHabit)
-
             }
             .listStyle(PlainListStyle())
             .padding(.top, 16)
@@ -44,9 +67,9 @@ struct HomeView: View {
                 ToolbarItem(placement: .principal) {
                     VStack {
                         Text("My Habits")
-                            .font(.headline)
+                            .font(.system(size: 24, weight: .bold, design: .rounded)) // Make it bold and rounded
                         Text("Time Remaining: \(formattedTimeRemainingUntilMidnight())")
-                            .font(.subheadline)
+                            .font(.system(size: 18, weight: .bold, design: .rounded)) // Use medium weight and rounded design
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -68,10 +91,11 @@ struct HomeView: View {
                     AddEditHabitView(habitToEdit: nil)
                         .environmentObject(habitListViewModel)
                 case .addStepCountHabit:  // new case
-                    AddStepCountHabitView(viewModel: habitListViewModel)
+                    AddStepCountHabitView()
+                        .environmentObject(stepCountViewModel)  // Added stepCountViewModel
+                        .environmentObject(habitListViewModel)
                 }
             }
-
         }
     }
 
@@ -105,8 +129,11 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(HabitListViewModel())
+            .environmentObject(StepCountViewModel())
     }
 }
+
+
 
 
 

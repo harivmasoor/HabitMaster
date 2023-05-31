@@ -3,13 +3,16 @@ import BackgroundTasks
 
 class CustomAppDelegate: UIResponder, UIApplicationDelegate {
     let habitListViewModel = HabitListViewModel()
+    let stepCountViewModel = StepCountViewModel()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         print("didFinishLaunchingWithOptions called")
-        NotificationCenter.default.addObserver(self, selector: #selector(saveHabits), name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(saveHabits), name: UIApplication.willTerminateNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveData), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveData), name: UIApplication.willTerminateNotification, object: nil)
+//        stepCountViewModel.loadStepCounts()
         habitListViewModel.resetStreaksIfNeeded()
         habitListViewModel.saveHabits()
+        stepCountViewModel.saveStepCounts()
         print("Application did finish launching")
         return true
     }
@@ -20,15 +23,24 @@ class CustomAppDelegate: UIResponder, UIApplicationDelegate {
         scheduleAppRefresh()
     }
     
-    @objc func saveHabits() {
-        print("saveHabits called")
+    @objc func saveData() {
+        print("saveData called")
+        do {
+            let data = try JSONEncoder().encode(stepCountViewModel.stepCounts)
+            print("Encoded data: \(data)")
+            UserDefaults.standard.set(data, forKey: "stepCounts")
+        } catch {
+            print("Failed to encode stepCounts: \(error)")
+        }
         habitListViewModel.saveHabits()
+        stepCountViewModel.saveStepCounts()
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         print("App became active")
         habitListViewModel.resetStreaksIfNeeded()
         habitListViewModel.saveHabits()
+        saveData()
     }
     
     func handleAppRefresh(task: BGAppRefreshTask) {
@@ -36,50 +48,64 @@ class CustomAppDelegate: UIResponder, UIApplicationDelegate {
         // Perform the task
         habitListViewModel.resetStreaksIfNeeded()
         habitListViewModel.saveHabits()
+//        stepCountViewModel.loadStepCounts()
+        saveData()
+//        loadData()
         // Mark the task as complete
         task.setTaskCompleted(success: true)
         print("Task completed with identifier: \(task.identifier)")
         // Schedule the next refresh
         scheduleAppRefresh()
     }
-    
+    func handleSaveStepCounts(task: BGProcessingTask) {
+        task.expirationHandler = {
+            // Handle task expiration if needed
+        }
+        
+        saveData()
+        
+        task.setTaskCompleted(success: true)
+    }
+
     func applicationWillEnterForeground(_ application: UIApplication) {
         habitListViewModel.resetStreaksIfNeeded()
         habitListViewModel.saveHabits()
+//        stepCountViewModel.loadStepCounts()
+        saveData()
+//        loadData()
     }
     
     func scheduleAppRefresh() {
-        let request = BGAppRefreshTaskRequest(identifier: "com.HabitMaster.HabitMaster.HabitMaster.resetHabits")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 1 * 60) // Fetch no earlier than 1 minutes from now
+        let request = BGProcessingTaskRequest(identifier: "com.HabitMaster.HabitMaster.HabitMaster.saveStepCounts")
+        request.requiresNetworkConnectivity = true
+        request.requiresExternalPower = false
         
         do {
-            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: "com.HabitMaster.HabitMaster.HabitMaster.resetHabits")
             try BGTaskScheduler.shared.submit(request)
-            print("App refresh scheduled with identifier: \(request.identifier) and earliestBeginDate: \(String(describing: request.earliestBeginDate))")
+            print("App refresh scheduled with identifier: \(request.identifier)")
         } catch {
             print("Could not schedule app refresh: \(error)")
         }
     }
+
     
     func registerBackgroundTasks() {
-        // Register the task
-        let result = BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.HabitMaster.HabitMaster.HabitMaster.resetHabits", using: nil) { task in
-            // This closure is called when your task is run
-            self.handleAppRefresh(task: task as! BGAppRefreshTask)
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.HabitMaster.HabitMaster.HabitMaster.saveStepCounts", using: nil) { task in
+            self.handleSaveStepCounts(task: task as! BGProcessingTask)
         }
-        
-        if result {
-            print("Task registered with identifier: com.HabitMaster.HabitMaster.HabitMaster.resetHabits")
-        } else {
-            print("Failed to register task")
-        }
-        
-        // Check for pending tasks
-        BGTaskScheduler.shared.getPendingTaskRequests { (requests) in
-            for request in requests {
-                print("Pending task: \(request.identifier) with earliestBeginDate: \(String(describing: request.earliestBeginDate))")
+    }
+
+    func loadData() {
+        if let data = UserDefaults.standard.data(forKey: "stepCounts") {
+            print("Retrieved data: \(data)")
+            do {
+                let decodedStepCounts = try JSONDecoder().decode([StepCount].self, from: data)
+                print("Decoded stepCounts: \(decodedStepCounts)")
+                self.stepCountViewModel.stepCounts = decodedStepCounts
+            } catch {
+                print("Failed to decode stepCounts: \(error)")
             }
         }
     }
+    
 }
-

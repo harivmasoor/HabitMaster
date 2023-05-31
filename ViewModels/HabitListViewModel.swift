@@ -2,21 +2,17 @@ import Foundation
 import Combine
 import SwiftUI
 import StoreKit
-import HealthKit
 
 class HabitListViewModel: ObservableObject {
     @Published var habits: [Habit] = [] {
         didSet {
-            // When a habit is added, subscribe to its changes
             if habits.count > oldValue.count {
                 let newHabit = habits.last!
                 habitSubscriptions[newHabit.id] = newHabit.objectWillChange.sink { [weak self] _ in
                     self?.objectWillChange.send()
                     self?.saveHabits()
                 }
-            }
-            // When a habit is removed, unsubscribe from its changes
-            else if habits.count < oldValue.count {
+            } else if habits.count < oldValue.count {
                 for habit in oldValue where !habits.contains(habit) {
                     habitSubscriptions[habit.id]?.cancel()
                     habitSubscriptions[habit.id] = nil
@@ -26,25 +22,12 @@ class HabitListViewModel: ObservableObject {
         }
     }
 
-    @Published var healthKitManager = HealthKitManager()
-
     private var habitSubscriptions: [UUID: AnyCancellable] = [:]
     
     init() {
         loadHabits()
         resetStreaksIfNeeded()
-        
-        _ = healthKitManager.$steps.sink { [weak self] newSteps in
-            for habit in self?.habits ?? [] where habit.goalStepCount > 0 {
-                habit.currentStepCount = newSteps
-                if newSteps >= habit.goalStepCount {
-                    self?.completeHabit(habit)
-                } else {
-                    self?.incompleteHabit(habit)
-                }
-            }
-        }
-        
+
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: nil) { [weak self] _ in
             self?.saveHabits()
         }
@@ -63,13 +46,11 @@ class HabitListViewModel: ObservableObject {
         RunLoop.main.add(timer, forMode: .common)
     }
 
-    
     func loadHabits() {
         let decoder = JSONDecoder()
         if let data = UserDefaults.standard.data(forKey: "habits"),
            let decodedHabits = try? decoder.decode([Habit].self, from: data) {
             self.habits = decodedHabits
-            // Resubscribe to the objectWillChange publisher for each habit
             for habit in habits {
                 habitSubscriptions[habit.id] = habit.objectWillChange.sink { [weak self] _ in
                     self?.objectWillChange.send()
@@ -79,7 +60,6 @@ class HabitListViewModel: ObservableObject {
         }
     }
 
-    
     func saveHabits() {
         let encoder = JSONEncoder()
         if let encodedData = try? encoder.encode(habits) {
@@ -113,7 +93,6 @@ class HabitListViewModel: ObservableObject {
         }
     }
 
-
     func getIndex(byId id: UUID) -> Int? {
         return habits.firstIndex(where: { $0.id == id })
     }
@@ -138,15 +117,13 @@ class HabitListViewModel: ObservableObject {
         }
     }
 
-
-
-    
     func timeRemainingUntilMidnight() -> TimeInterval {
         let calendar = Calendar.current
         let now = Date()
         let nextMidnight = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now))!
         return nextMidnight.timeIntervalSince(now)
     }
+
     func completeHabit(_ habit: Habit) {
         habit.isCompleted = true
         habit.completedToday = true
@@ -168,6 +145,7 @@ class HabitListViewModel: ObservableObject {
 
         saveHabits()
     }
+
     func shouldPromptForReview() -> Bool {
         let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -10, to: Date()) ?? Date()
         let lastPromptDate = UserDefaults.standard.object(forKey: "LastReviewPromptDate") as? Date ?? oneWeekAgo
@@ -182,32 +160,7 @@ class HabitListViewModel: ObservableObject {
             UserDefaults.standard.set(Date(), forKey: "LastReviewPromptDate")
         }
     }
-    func updateCurrentStepCount(for habit: Habit) {
-    let healthStore = HKHealthStore()
-    let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
-    let date = Date()
-    let calendar = Calendar.current
-    let startOfDay = calendar.startOfDay(for: date)
-    let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: date, options: .strictStartDate)
-    let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { (_, result, error) in
-        guard let result = result, let sum = result.sumQuantity() else {
-            if let error = error {
-                print("Error retrieving step count: \(error.localizedDescription)")
-            }
-            return
-        }
-        DispatchQueue.main.async {
-            habit.currentStepCount = Int(sum.doubleValue(for: .count()))
-            print("Current steps for \(habit.name): \(habit.currentStepCount)")
-        }
-    }
-    healthStore.execute(query)
 }
-}
-
-
-
-
 
 
 

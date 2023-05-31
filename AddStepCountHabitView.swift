@@ -1,11 +1,13 @@
 import SwiftUI
 
 struct AddStepCountHabitView: View {
-    @ObservedObject var viewModel: HabitListViewModel
+    @EnvironmentObject var stepCountViewModel: StepCountViewModel
     @Environment(\.presentationMode) var presentationMode
     @State private var goalStepCount: Int = 10000
     @State private var currentStepCount: Int = 0
+    @ObservedObject var healthKitManager = HealthKitManager.shared
     
+
     var body: some View {
         NavigationView {
             Form {
@@ -16,20 +18,25 @@ struct AddStepCountHabitView: View {
                 }
                 Section {
                     Button(action: {
-                        let newHabit = Habit(name: "Daily Step Goal",
-                                             subtitle: "",
-                                             lastCompletionDate: nil,
-                                             currentStepCount: currentStepCount,
-                                             goalStepCount: goalStepCount)
-                        viewModel.habits.append(newHabit)
+                        stepCountViewModel.addStepCountHabit(goalSteps: goalStepCount)
+                        stepCountViewModel.saveStepGoal(stepGoal: goalStepCount)
                         presentationMode.wrappedValue.dismiss()
                     }) {
-                        Text("Add Habit")
+                        Text("Add Step Count Habit")
                     }
+
                 }
             }
             .navigationTitle("New Step Count Habit")
+            .onAppear {
+                print("Retrieved step goal: \(stepCountViewModel.userStepGoal)") // Add this line
+                goalStepCount = stepCountViewModel.userStepGoal
+            }
+
         }
     }
 }
+
+
+
 

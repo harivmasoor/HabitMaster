@@ -1,12 +1,19 @@
 import HealthKit
 
 class HealthKitManager: ObservableObject {
-    @Published var steps: Int = 0
+    @Published var steps: Int {
+        didSet {
+            UserDefaults.standard.set(steps, forKey: "HealthKitManagerSteps")
+        }
+    }
 
     private let healthStore = HKHealthStore()
     static let shared = HealthKitManager()
+
     init() {
+        self.steps = UserDefaults.standard.integer(forKey: "HealthKitManagerSteps")
         requestPermissions()
+        fetchLatestStepCount()
     }
 
     func requestPermissions() {
@@ -45,35 +52,35 @@ class HealthKitManager: ObservableObject {
             }
         })
 
-        healthStore.enableBackgroundDelivery(for: sampleType, frequency: .immediate, withCompletion: { (success, error) in
-            if success {
-                print("Background delivery enabled")
-            } else if let error = error {
-                print("Error enabling background delivery: \(error.localizedDescription)")
-            }
-        })
     }
 
-    private func fetchLatestStepCount() {
+    func fetchLatestStepCount() {
         let sampleType = HKObjectType.quantityType(forIdentifier: .stepCount)!
-        
+
         let now = Date()
         let startOfDay = Calendar.current.startOfDay(for: now)
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
 
-        let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)]) { (query, samples, error) in
-            guard let samples = samples as? [HKQuantitySample] else {
-                // handle error
+        let query = HKStatisticsQuery(quantityType: sampleType, quantitySamplePredicate: predicate, options: .cumulativeSum) { (_, result, error) in
+            if let error = error {
+                print("Error fetching step count: \(error.localizedDescription)")
                 return
             }
-
+            
             DispatchQueue.main.async {
-                let stepCount = samples.reduce(0) { $0 + $1.quantity.doubleValue(for: .count()) }
+                guard let result = result, let sum = result.sumQuantity() else {
+                    print("Error fetching step count: result is nil")
+                    return
+                }
+                
+                let stepCount = sum.doubleValue(for: .count())
                 self.steps = Int(stepCount)
+                print("Updated steps: \(self.steps)")
             }
         }
 
         healthStore.execute(query)
     }
+
 
 }

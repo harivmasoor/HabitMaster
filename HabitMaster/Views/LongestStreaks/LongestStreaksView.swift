@@ -4,7 +4,7 @@ struct LongestStreaksView: View {
     @EnvironmentObject var viewModel: HabitListViewModel
     @State private var activeSheet: CustomMenuButton.ActiveSheet?
     @Environment(\.presentationMode) private var presentationMode
-
+    @EnvironmentObject var stepCountViewModel: StepCountViewModel
 
     var body: some View {
         NavigationView {
@@ -36,6 +36,32 @@ struct LongestStreaksView: View {
                     }
                 }
                 .onDelete(perform: deleteHabit)
+
+                Section(header: Text("Step Count Streak")) {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Steps")
+                                .font(.headline)
+                            Text("Daily step count goal")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "rosette")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.yellow)
+                            .overlay(
+                                Text("\(stepCountViewModel.stepCounts.max(by: { $0.currentStreak < $1.currentStreak })?.currentStreak ?? 0)")
+                                    .font(.system(size: 12))
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                            )
+                    }
+                }
             }
             .navigationBarTitle("Longest Streaks")
             .navigationBarItems(trailing:
@@ -49,17 +75,16 @@ struct LongestStreaksView: View {
                 switch sheet {
                 case .addHabit:
                     AddEditHabitView(habitToEdit: nil)
-
                         .environmentObject(viewModel)
                 case .editHabit:
                     AddEditHabitView(habitToEdit: nil)
-
                         .environmentObject(viewModel)
                 case .longestStreaks:
                     LongestStreaksView()
                         .environmentObject(viewModel)
                 case .addStepCountHabit:  // new case
-                    AddStepCountHabitView(viewModel: viewModel)
+                    AddStepCountHabitView() // no need to pass viewModel
+                        .environmentObject(stepCountViewModel)
                 }
             }
         }
