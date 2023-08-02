@@ -36,4 +36,3 @@ struct SettingsView_Previews: PreviewProvider {
 }
 
 
-///Remember that you'll need to connect this view to your data management system (e.g., User Defaults, Core Data, or a remote API) to save and retrieve user settings. Additionally, you'll need to implement actual notifications using UNUserNotificationCenter or another notification framework

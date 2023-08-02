@@ -43,6 +43,8 @@
 		5F84F5082A058D620062F287 /* CustomMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F84F5072A058D620062F287 /* CustomMenuButton.swift */; };
 		5FF658672A2177F5001FD258 /* Step.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF658662A2177F5001FD258 /* Step.swift */; };
 		5FF658692A21CD86001FD258 /* StepHabitRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF658682A21CD86001FD258 /* StepHabitRowView.swift */; };
+		5FF6586B2A274F4E001FD258 /* StreakViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF6586A2A274F4E001FD258 /* StreakViewModel.swift */; };
+		5FF6586D2A274FE3001FD258 /* Weight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF6586C2A274FE3001FD258 /* Weight.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,8 @@
 		5FA0DB1E2A156324009B9D9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5FF658662A2177F5001FD258 /* Step.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Step.swift; sourceTree = "<group>"; };
 		5FF658682A21CD86001FD258 /* StepHabitRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepHabitRowView.swift; sourceTree = "<group>"; };
+		5FF6586A2A274F4E001FD258 /* StreakViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakViewModel.swift; sourceTree = "<group>"; };
+		5FF6586C2A274FE3001FD258 /* Weight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weight.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +204,7 @@
 			children = (
 				5FF658662A2177F5001FD258 /* Step.swift */,
 				5F84F4CE2A041F640062F287 /* Habit.swift */,
+				5FF6586C2A274FE3001FD258 /* Weight.swift */,
 				5F84F4EE2A0426420062F287 /* User.swift */,
 				5F84F4F02A0426600062F287 /* Category.swift */,
 				5F84F4F22A04268E0062F287 /* Achievement.swift */,
@@ -318,6 +323,7 @@
 			children = (
 				5F84F4FF2A0466AE0062F287 /* HabitListViewModel.swift */,
 				5F3F7A652A0B20CC00E0AB9B /* StepCountViewModel.swift */,
+				5FF6586A2A274F4E001FD258 /* StreakViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -474,6 +480,7 @@
 				5F84F4FD2A0461AE0062F287 /* HabitDetailView.swift in Sources */,
 				5F3F7A662A0B20CC00E0AB9B /* StepCountViewModel.swift in Sources */,
 				5F84F5052A0576E40062F287 /* LongestStreaksView.swift in Sources */,
+				5FF6586B2A274F4E001FD258 /* StreakViewModel.swift in Sources */,
 				5F84F5082A058D620062F287 /* CustomMenuButton.swift in Sources */,
 				5F5D4B3C2A097D1D00212AB3 /* HabitDescriptionView.swift in Sources */,
 				5F84F4F52A0427030062F287 /* CodableColor.swift in Sources */,
@@ -490,6 +497,7 @@
 				5F5D4B302A0716DF00212AB3 /* GlobalEnums.swift in Sources */,
 				5F84F4F32A04268E0062F287 /* Achievement.swift in Sources */,
 				5F84F4F12A0426600062F287 /* Category.swift in Sources */,
+				5FF6586D2A274FE3001FD258 /* Weight.swift in Sources */,
 				5F84F5002A0466AE0062F287 /* HabitListViewModel.swift in Sources */,
 				5F84F4E82A0420F40062F287 /* AppColors.swift in Sources */,
 				5F84F4E52A0420C20062F287 /* Color+Extension.swift in Sources */,
