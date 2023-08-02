@@ -24,6 +24,7 @@ final class StepCount: ObservableObject, Identifiable, Codable {
         self.longestStreak = longestStreak // initializing the longest streak
         self.completedYesterday = isCompleted
     }
+
     enum CodingKeys: CodingKey {
         case id, goalSteps, actualSteps, date, isCompleted, lastCompletionDate, currentStreak, longestStreak, completedYesterday
     }

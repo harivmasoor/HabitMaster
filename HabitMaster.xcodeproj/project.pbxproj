@@ -162,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				5F6289A42A1D67370036D983 /* HabitMaster.entitlements */,
+				5FF1CC822ABE523E005BBBC8 /* Frameworks */,
 				5FA0DB1E2A156324009B9D9D /* Info.plist */,
 				5F84F4A32A041A1A0062F287 /* Assets.xcassets */,
 				5F84F4DD2A0420240062F287 /* Helpers */,
@@ -342,6 +343,13 @@
 				5F84F5072A058D620062F287 /* CustomMenuButton.swift */,
 			);
 			path = CustomMenuButton;
+			sourceTree = "<group>";
+		};
+		5FF1CC822ABE523E005BBBC8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
