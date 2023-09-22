@@ -103,9 +103,7 @@ class HabitListViewModel: ObservableObject {
             let isSameDay = habit.lastCompletionDate.map { calendar.isDateInToday($0) } ?? false
             let isPreviousDay = habit.lastCompletionDate.map { calendar.isDateInYesterday($0) } ?? false
 
-            if !isSameDay && !isPreviousDay && habit.currentStreak > 0 {
-                habit.currentStreak = 0
-            } else if isPreviousDay && habit.currentStreak > 0 && !habit.isCompleted {
+            if isPreviousDay && habit.currentStreak > 0 && !habit.isCompleted {
                 habit.currentStreak += 1
             }
 

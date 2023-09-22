@@ -149,13 +149,9 @@ class StepCountViewModel: ObservableObject {
             let isSameDay = stepCount.date.isToday
             let isPreviousDay = stepCount.lastCompletionDate.map { calendar.isDateInYesterday($0) } ?? false
 
-            // If the date of step count is not today and it's not completed, reset the streak
-            if !isSameDay && stepCount.currentStreak > 0 && !stepCount.isCompleted {
-                stepCount.currentStreak = 0
-            }
 
             // If the last completion date was the previous day and the stepCount is completed, increment the streak
-            else if isPreviousDay && stepCount.isCompleted {
+            if isPreviousDay && stepCount.isCompleted {
                 stepCount.currentStreak += 1
             }
 
